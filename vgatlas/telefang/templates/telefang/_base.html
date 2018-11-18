@@ -1,0 +1,17 @@
+{% extends '_base.html' %}
+
+{% block menu %}
+    <div>[telefang menu]</div>
+    <div>
+        <a href="{{ url_for('telefang.denjuu_list') }}">denjuu</a> &bull;
+        <a href="">secret denjuu</a> &bull;
+    
+    </div>
+{% endblock %}
+
+{% macro link_denjuu(denjuu_id) %}
+    <!-- TODO walkie -->
+    <a href="{{ url_for('telefang.denjuu', id=denjuu_id) }}">
+        {{ g.telefang.text.denjuu[denjuu_id][0] }}
+    </a>
+{% endmacro %}

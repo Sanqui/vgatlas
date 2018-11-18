@@ -1,0 +1,12 @@
+{% extends 'telefang/_base.html' %}
+
+{% block content %}
+    <h2>Monsters</h2>
+    <ul>
+        {% for denjuu in g.telefang.denjuu %}
+            <li><a href="{{url_for('telefang.denjuu', id=loop.index0)}}">
+                #{{loop.index0}} {{g.telefang.text.denjuu[loop.index0][0]}}
+            </a>
+        {% endfor %}
+    </ul>
+{% endblock %}

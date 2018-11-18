@@ -22,7 +22,7 @@ def monsters():
 @blueprint.route('/ff1/monsters/<int:id>')
 def monster(id):
     monster = ff1.monsters[id]
-    name = ff1.text.monsters[id]
+    name = ff1.text.monsters[id].str
     return render_template('ff1/monster.html', id=id, monster=monster, name=name)
 
 @blueprint.route('/ff1/weapons')
@@ -32,5 +32,5 @@ def weapons():
 @blueprint.route('/ff1/weapon/<int:id>')
 def weapon(id):
     weapon = ff1.weapons[id]
-    name = ff1.text.basic.weapons[id]
+    name = ff1.text.basic.weapons[id].str
     return render_template('ff1/weapon.html', id=id, weapon=weapon, name=name)
