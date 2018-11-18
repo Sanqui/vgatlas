@@ -1,0 +1,12 @@
+{% extends 'ff1/_base.html' %}
+
+{% block content %}
+    <h2>Weapons</h2>
+    <ul>
+        {% for monster in g.ff1.weapons %}
+            <li><a href="{{url_for('ff1.weapon', id=loop.index0)}}">
+                #{{loop.index0}} {{g.ff1.text.basic.weapons[loop.index0].str}}
+            </a>
+        {% endfor %}
+    </ul>
+{% endblock %}
