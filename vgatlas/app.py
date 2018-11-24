@@ -7,7 +7,7 @@ import telefang
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
-app.jinja_env.globals.update(zip=zip, pformat=pformat)
+app.jinja_env.globals.update(zip=zip, pformat=pformat, isinstance=isinstance)
 app.register_blueprint(ff1.views.blueprint)
 app.register_blueprint(telefang.views.blueprint)
 

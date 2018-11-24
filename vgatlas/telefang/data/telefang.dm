@@ -27,26 +27,26 @@ text {
 }
 NUM_DENJUU = 174
 
+:DenjuuNo {
+    no      u8
+    = no-1
+} -> denjuu
+
 // ROM
 
 // 75:4b48
 denjuu @0x1d4b48 [NUM_DENJUU]{
+    id          = _i
     base_stats  Stats
     moves       [4]u8
     unk1        u8
     evolution {
         level       u8
-        denjuu_no   u8
-        denjuu      = denjuu_no-1
+        denjuu      DenjuuNo
     }
     type        Type
     
     move_learn_levels [2]u8
-    
-    //moves       [4] {
-    //    move    = moves[i]
-    //    level   = move_learn_levels[i]
-    //}
 }
 
 // This determines how much a stat is gained in two levels.
@@ -54,19 +54,16 @@ denjuu[].level_influence @0x9c715 [NUM_DENJUU]Stats
 
 denjuu[].evolutions @0xaa0b1 [NUM_DENJUU]{
     items   [2]u8
-    denjuu  [2]u8
+    denjuu  [2]DenjuuNo
 }
 
 denjuu[].exp_items @0xa9a93 [NUM_DENJUU]{
-    items {
-        //items           [64]u1
-        items           [64]b1
-    }
+    items           [64]b1
     favorite_item   u8
 }
 
 secret_denjuu @0x13c0d [14] {
-    denjuu      u8
+    denjuu      DenjuuNo
     level       u8
     fd          u8
     personality u8

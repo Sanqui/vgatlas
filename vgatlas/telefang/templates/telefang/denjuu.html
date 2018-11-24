@@ -62,7 +62,7 @@
         <div class="col-4">
             <p><span class="badge badge-primary">Natural</span>
             {% if denjuu.evolution.level %}
-                Evolves to {{ link_denjuu(denjuu.evolution.denjuu-1) }} at lv. {{ denjuu.evolution.level }}.
+                Evolves to {{ link_denjuu(denjuu.evolution.denjuu.id) }} at lv. {{ denjuu.evolution.level }}.
             {% else %}
                 Does not naturally evolve.
             {% endif %}
@@ -72,7 +72,7 @@
                 {% set denjuu_evo = denjuu.evolutions.denjuu[i] %}
                 {% if item != 255 %}
                     <p><span class="badge badge-primary">Mod/DNA</span>
-                    Evolves to {{ link_denjuu(denjuu_evo-1) }} using {{ item }}.
+                    Evolves to {{ link_denjuu(denjuu_evo.id) }} using {{ item }}.
                 {% endif %}
             {% endfor %}
         </div>
