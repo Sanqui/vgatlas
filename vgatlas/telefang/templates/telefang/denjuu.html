@@ -2,6 +2,7 @@
 
 {% block content %}
     <p><i>[todo breadcrumb]</i>
+    <p><i>[todo prev/next]</i>
     <h2>Denjuu #{{id}} {{ link_denjuu(id) }}</h2>
     <div class="row">
         <div class="col-8">
@@ -18,18 +19,20 @@
                     } %}
                     {% for name in base_stat_names %}
                         {% set stat = denjuu.base_stats[name] %}
+                        {% set level_influence = denjuu.level_influence[name] %}
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-4">
                                     <strong>{{base_stat_names[name]}}</strong>
                                 </div>
                                 <div class="col-2">
-                                    {{stat}} (+{{g.telefang.denjuu_level_influence[id][name]}})
+                                    {{stat}} (+{{level_influence}})
                                     <!-- TODO lv. 100 stats -->
                                 </div>
                                 <div class="col-6">
                                     <div class="progress">
                                         <div class="progress-bar" style="width: {{100*(stat/g.telefang.max_stat)}}%"></div>
+                                        <div class="progress-bar bg-warning" style="width: {{100*(level_influence/g.telefang.max_stat)}}%"></div>
                                     </div>
                                 </div>
                             </div>
@@ -65,8 +68,8 @@
             {% endif %}
             
             {% for i in range(2) %}
-                {% set item = g.telefang.evolutions[id]['items'][i] %}
-                {% set denjuu_evo = g.telefang.evolutions[id].denjuu[i] %}
+                {% set item = denjuu.evolutions['items'][i] %}
+                {% set denjuu_evo = denjuu.evolutions.denjuu[i] %}
                 {% if item != 255 %}
                     <p><span class="badge badge-primary">Mod/DNA</span>
                     Evolves to {{ link_denjuu(denjuu_evo-1) }} using {{ item }}.
@@ -77,6 +80,6 @@
         
     <p>Raw data:
     <pre>
-{{ denjuu }}
+{{ pformat(denjuu) }}
     </pre>
 {% endblock %}
