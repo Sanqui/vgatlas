@@ -3,9 +3,11 @@ from datamijn import datamijn
 
 dm = open("ff1/data/ff1.dm")
 rom = open("ff1/data/ff1.nes", "rb")
-ff1 = datamijn.parse(dm, rom)
+ff1 = datamijn.parse(dm, rom, "ff1/static/")
 
-blueprint = Blueprint('ff1', __name__, static_folder='static/', template_folder='templates/')
+blueprint = Blueprint('ff1', __name__, 
+    static_folder='static/', static_url_path="/ff1/static",
+    template_folder='templates/')
 
 @blueprint.before_request
 def before_request():

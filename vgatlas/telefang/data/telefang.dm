@@ -27,12 +27,17 @@ text {
 }
 NUM_DENJUU = 174
 
-:DenjuuNo {
-    no      u8
-    = no-1
+:DenjuuNo u8 match {
+    0   => =None
+    no  => =no - 1
 } -> denjuu
 
 // ROM
+
+gfx {
+    denjuu @0x1ac000 [NUM_DENJUU][7][8]GBTile
+    !save denjuu
+}
 
 // 75:4b48
 denjuu @0x1d4b48 [NUM_DENJUU]{

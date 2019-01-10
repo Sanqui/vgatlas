@@ -1,5 +1,10 @@
 !import ff1text
 
+
+gfx {
+    font        @0x24810 [0x77]NESTile
+    !save font
+}
 text            FF1Text
 _NUM_MONSTERS   = 128
 //monstersx {

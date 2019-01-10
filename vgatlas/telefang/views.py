@@ -3,12 +3,14 @@ from datamijn import datamijn
 
 dm = open("telefang/data/telefang.dm")
 rom = open("telefang/data/telefang_pw.gbc", "rb")
-telefang = datamijn.parse(dm, rom)
+telefang = datamijn.parse(dm, rom, "telefang/static/")
 
 max_stat = max(max([s for n,s in denjuu.base_stats.items() if n!='_io']) for denjuu in telefang.denjuu) + 4
 telefang.max_stat = max_stat
 
-blueprint = Blueprint('telefang', __name__, static_folder='static/', template_folder='templates/')
+blueprint = Blueprint('telefang', __name__,
+    static_folder='static/', static_url_path="/telefang/static",
+    template_folder='templates/')
 
 @blueprint.before_request
 def before_request():

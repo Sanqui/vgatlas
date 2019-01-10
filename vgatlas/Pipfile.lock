@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "08aec2dde03610f27814d9af6fc61735bede153d004bb83ec67a861662fd3b84"
+            "sha256": "01b415549ef797eb85f62125f6fe21da33f8dcc83211972b0771eb248f8d8335"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.6"
+            "python_version": "3.7"
         },
         "sources": [
             {
@@ -16,15 +16,16 @@
         ]
     },
     "default": {
-        "cfa988d": {
-            "path": "/home/sanqui/romhacking/datamijn"
-        },
         "click": {
             "hashes": [
                 "sha256:2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13",
                 "sha256:5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"
             ],
             "version": "==7.0"
+        },
+        "datamijn": {
+            "git": "file:///home/sanqui/romhacking/datamijn",
+            "ref": "c1a27d6d0eaf8926adb410ca2462bd9d248a59ce"
         },
         "flask": {
             "hashes": [

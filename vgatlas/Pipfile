@@ -5,9 +5,9 @@ name = "pypi"
 
 [packages]
 flask = "*"
-"cfa988d" = {path = "/home/sanqui/romhacking/datamijn"}
+datamijn = {git="/home/sanqui/romhacking/datamijn", "ref"="0.2.6"}
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
