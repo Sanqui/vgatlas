@@ -35,13 +35,24 @@ NUM_DENJUU = 174
 // ROM
 
 gfx {
-    denjuu @0x1ac000 [NUM_DENJUU][7][8]GBTile
+    denjuu_palettes @0x34800 [NUM_DENJUU]GBPalette
+    denjuu @0x1ac000 [NUM_DENJUU] {
+        pic     [7][8]GBTile
+        
+        !if _i % 18 == 17 {
+            _       [0x100]byte
+        }
+        
+        = pic | denjuu_palettes[_i]
+    }
     !save denjuu
 }
 
 // 75:4b48
 denjuu @0x1d4b48 [NUM_DENJUU]{
     id          = _i
+    number      = id + 1
+    name        = text.denjuu[id]
     base_stats  Stats
     moves       [4]u8
     unk1        u8

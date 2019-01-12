@@ -1,6 +1,8 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, g
 from datamijn import datamijn
 
+from object_endpoint import object_endpoint
+
 dm = open("ff1/data/ff1.dm")
 rom = open("ff1/data/ff1.nes", "rb")
 ff1 = datamijn.parse(dm, rom, "ff1/static/")
@@ -13,10 +15,13 @@ blueprint = Blueprint('ff1', __name__,
 def before_request():
     g.ff1 = ff1
 
+
+
 @blueprint.route('/ff1/')
 def index():
     return render_template('ff1/index.html')
-    
+"""
+
 @blueprint.route('/ff1/monsters')
 def monsters():
     return render_template('ff1/monsters.html')
@@ -36,3 +41,6 @@ def weapon(id):
     weapon = ff1.weapons[id]
     name = ff1.text.basic.weapons[id].str
     return render_template('ff1/weapon.html', id=id, weapon=weapon, name=name)
+"""
+
+object = blueprint.route('/ff1/<path:path>')(object_endpoint(ff1, "ff1"))

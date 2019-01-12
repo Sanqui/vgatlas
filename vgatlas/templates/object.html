@@ -1,0 +1,80 @@
+{% extends base_template %}
+
+{% macro show_object(object, path, in_list=False, depth=0) %}
+    {% if isinstance(object, dict) %}
+        {% if not in_list %}
+        <div class="card">
+        {% endif %}
+            <dl class="row card-body mb-0">
+                {% for key, value in object.items() %}
+                    <dt class="col-sm-3">
+                        <a href="{{ url_for(root+'.object',
+                            path=pathjoin(path + [key])) }}">
+                            {{ key }}
+                        </a>
+                    </dt>
+                    <dd class="col-sm-7">{{ show_object(value, path=path + [key], depth=depth+1) }}</dd>
+                    <dd class="col-sm-2 text-muted">
+                        &lt;{{ type(value).__name__ }}&gt;
+                    </dd>
+                {% endfor %}
+            </dl>
+        {% if not in_list %}
+        </div>
+        {% endif %}
+    {% elif isinstance(object, type([])) %}
+        {% if getattr(object._type, "_char", False) %} {# XXX #}
+            {{ str(object) }}
+        {% else %}
+            <ul class="list-group">
+                {% set show = 5 if (depth and len(object) > 5) else len(object) %}
+                {% for i, value in enumerate(object[:show]) %}
+                    <li class="list-group-item">
+                        <a href="{{ url_for(root+'.object',
+                          path=pathjoin(path + [i])) }}">
+                            <span class="badge badge-secondary badge-pill">{{i}}</span>
+                        </a>
+                        {{ show_object(value, path=path + [i],  in_list=True, depth=depth+1) }}
+                    </li>
+                {% endfor %}
+                {% if show == 5 %}
+                    <details>
+                        <summary>{{ len(object)-show }} more items...</summary>
+                        {% for i, value in enumerate(object[show:]) %}
+                            <li class="list-group-item">
+                                <a href="{{ url_for(root+'.object',
+                                  path=pathjoin(path + [i+show])) }}">
+                                    <span class="badge badge-secondary badge-pill">{{i+show}}</span>
+                                </a>
+                                {{ show_object(value, path=path + [i+show],  in_list=True, depth=depth+1) }}
+                            </li>
+                        {% endfor %}
+                    </details>
+                {% endif %}
+            </ul>
+        {% endif %}
+    {% elif isinstance(object, datamijn.ForeignKey) %}
+        <a href="{{ url_for(root+'.object',
+            path=pathjoin(object._field_name.split('.') + [object._result])) }}">{{ object._result }} -> {{object._field_name}}</a>
+    {% else %}
+        {{ object }}
+    {% endif %}
+{% endmacro %}
+
+{% block content %}
+    <h2>
+        <a href="{{ url_for(root+'.index') }}">{{ root }}</a> »
+        {% for i, segment in enumerate(path) %}
+            <a href="{{ url_for(root+'.object', path=pathjoin(path[:i+1])) }} ">
+                {{ segment }}
+            </a>
+            »
+        {% endfor %}
+    </h2>
+    <p>Object &lt;{{ type(object).__name__ }}&gt;:
+        {{ show_object(object, path) }}
+    <p>Raw data:
+    <pre>
+{{ pformat(object) }}
+    </pre>
+{% endblock %}

@@ -2,7 +2,10 @@
 
 {% block content %}
     <h2>Final Fantasy 1</h2>
+    Top-level menu
     <ul>
-        <li><a href="{{url_for('ff1.monsters')}}">Monsters</a>
+        {% for key in g.ff1 %}
+            <li><a href="/ff1/{{key}}">{{key}}</a>
+        {% endfor %}
     </ul>
 {% endblock %}

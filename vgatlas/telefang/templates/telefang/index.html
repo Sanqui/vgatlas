@@ -2,4 +2,10 @@
 
 {% block content %}
     <h2>Telefang</h2>
+    Top-level menu
+    <ul>
+        {% for key in g.telefang %}
+            <li><a href="/telefang/{{key}}">{{key}}</a>
+        {% endfor %}
+    </ul>
 {% endblock %}

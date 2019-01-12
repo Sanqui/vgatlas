@@ -1,5 +1,7 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for, g
+from flask import Blueprint, flash, redirect, render_template, request, url_for, g, abort
 from datamijn import datamijn
+
+from object_endpoint import object_endpoint
 
 dm = open("telefang/data/telefang.dm")
 rom = open("telefang/data/telefang_pw.gbc", "rb")
@@ -28,5 +30,7 @@ def denjuu_list():
 def denjuu(id):
     denjuu = telefang.denjuu[id]
     name = telefang.text.denjuu[id][0]
-    return render_template('telefang/denjuu.html', id=id, denjuu=denjuu, name=name)
+    return render_template('telefang/denjuu.html', id=id, denjuu=denjuu, name=name) 
+
+object = blueprint.route('/telefang/<path:path>')(object_endpoint(telefang, "telefang"))
 
