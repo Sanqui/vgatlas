@@ -1,11 +1,13 @@
 {% extends 'ff1/_base.html' %}
 
+{% from 'object.html' import show_object with context %}
+
 {% block content %}
     <h2>Monsters</h2>
     <ul>
         {% for monster in g.ff1.monsters %}
-            <li><a href="{{url_for('ff1.monster', id=loop.index0)}}">
-                #{{loop.index0}} {{g.ff1.text.monsters[loop.index0].str}}
+            <li><a href="/ff1/monsters/{{ loop.index0 }}">
+                #{{loop.index0}} {{ monster.name }}
             </a>
         {% endfor %}
     </ul>

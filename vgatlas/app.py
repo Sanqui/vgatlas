@@ -1,6 +1,6 @@
 from pprint import pformat
 
-from flask import Flask, render_template
+from flask import Flask, render_template, Markup
 from jinja2 import StrictUndefined
 import ff1
 import telefang

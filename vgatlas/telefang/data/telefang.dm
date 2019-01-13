@@ -2,15 +2,6 @@
 
 NUM_DENJUU = 174
 
-:Type u8 match {
-    :Mountain
-    :Grassland
-    :Forest
-    :Aquatic
-    :Sky
-    :Desert
-}
-
 :Stats {
     hp              u8
     speed           u8
@@ -20,17 +11,27 @@ NUM_DENJUU = 174
     denma_defense   u8
 }
 
+NUM_DENJUU = 174
+NUM_TYPES = 6
+// XXX
+NUM_MOVES = 200
+
 text {
     // 75:4000
-    denjuu @0x1d4000 [174][8]Char
-    moves  @0x1d46f8 [200][8]Char
+    denjuu @0x1d4000 [NUM_DENJUU][8]Char
+    moves  @0x1d46f8 [NUM_MOVES] [8]Char
+    types  @0x1d5628 [NUM_TYPES] [4]Char
 }
-NUM_DENJUU = 174
 
 :DenjuuNo u8 match {
     0   => =None
     no  => =no - 1
 } -> denjuu
+
+:MoveNo u8 match {
+    0   => =None
+    no  => =no
+} -> moves
 
 // ROM
 
@@ -54,13 +55,13 @@ denjuu @0x1d4b48 [NUM_DENJUU]{
     number      = id + 1
     name        = text.denjuu[id]
     base_stats  Stats
-    moves       [4]u8
+    moves       [4]MoveNo
     unk1        u8
     evolution {
         level       u8
         denjuu      DenjuuNo
     }
-    type        Type
+    type        u8 -> types
     
     move_learn_levels [2]u8
 }
@@ -84,3 +85,13 @@ secret_denjuu @0x13c0d [14] {
     fd          u8
     personality u8
 }
+
+types [NUM_TYPES] {
+    name    = text.types[_i]
+}
+
+moves @0x9cb29 [NUM_MOVES] {
+    name            = text.moves[_i]
+    power           u8
+}
+

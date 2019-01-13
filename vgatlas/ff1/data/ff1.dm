@@ -38,7 +38,8 @@ item_prices     @0x37c10 [256]u16
 //}
 
 :Monster {
-    //name            = _._names[_index]
+    id              = _i
+    name            = text.monsters[_i]
     
     exp             u16
     gold            u16

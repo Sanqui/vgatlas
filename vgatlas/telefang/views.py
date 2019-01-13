@@ -21,16 +21,6 @@ def before_request():
 @blueprint.route('/telefang/')
 def index():
     return render_template('telefang/index.html')
-    
-@blueprint.route('/telefang/denjuu')
-def denjuu_list():
-    return render_template('telefang/denjuu_list.html')
-
-@blueprint.route('/telefang/denjuu/<int:id>')
-def denjuu(id):
-    denjuu = telefang.denjuu[id]
-    name = telefang.text.denjuu[id][0]
-    return render_template('telefang/denjuu.html', id=id, denjuu=denjuu, name=name) 
 
 object = blueprint.route('/telefang/<path:path>')(object_endpoint(telefang, "telefang"))
 
