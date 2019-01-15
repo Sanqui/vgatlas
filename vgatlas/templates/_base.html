@@ -1,4 +1,8 @@
-<!doctype html>
+{%
+    from '_macros.html' import  
+        breadcrumb, prevnext
+    with context
+%}<!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -13,6 +17,7 @@
         .pic {display: block; margin: 8px auto 8px auto;
             width: 128px;
             image-rendering:-moz-crisp-edges;image-rendering:-o-crisp-edges;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;}
+        .active a {color: inherit;}
     </style>
 </head>
 <body>

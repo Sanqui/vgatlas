@@ -20,7 +20,7 @@ def before_request():
 
 @blueprint.route('/telefang/')
 def index():
-    return render_template('telefang/index.html')
+    return render_template('telefang/index.html', root="telefang", path=[], prev=None, next=None)
 
 object = blueprint.route('/telefang/<path:path>')(object_endpoint(telefang, "telefang"))
 

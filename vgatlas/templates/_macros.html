@@ -1,0 +1,41 @@
+{% macro breadcrumb() %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for(root+'.index') }}">{{ root }}</a>
+                </li>
+            {% for i, segment in enumerate(path) %}
+                <li class="breadcrumb-item {% if loop.last %}active{% endif %}">
+                    <a href=" {{ url_for(root+'.object', path=pathjoin(path[:i+1])) }} ">{{ segment }}</a>
+                </li>
+            {% endfor %}
+        </ol>
+    </nav>
+{% endmacro %}
+{% macro prevnext() %}
+    {% if prev != None or next != None %}
+        <nav aria-label="...">
+            <ul class="pagination pagination-lg justify-content-center">
+                <li class="page-item {% if prev == None %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for(root+'.object', path=pathjoin(path[:-1] + [index-1])) }}" tabindex="-1">
+                        {% if prev != None %}
+                            #{{index-1}}
+                        {% else %} - {% endif %}
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link">
+                        #{{index}}
+                    </a>
+                </li>
+                <li class="page-item {% if next == None %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for(root+'.object', path=pathjoin(path[:-1] + [index+1])) }}">
+                        {% if next != None %}
+                            #{{index+1}}
+                        {% else %} - {% endif %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+{% endmacro %}

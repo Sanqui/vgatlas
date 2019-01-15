@@ -79,16 +79,7 @@
 {% endmacro %}
 
 {% block content %}
-    <h2>
-        <a href="{{ url_for(root+'.index') }}">{{ root }}</a> »
-        {% for i, segment in enumerate(path) %}
-            <a href="{{ url_for(root+'.object', path=pathjoin(path[:i+1])) }} ">
-                {{ segment }}
-            </a>
-            »
-        {% endfor %}
-    </h2>
-    <p>Object &lt;{{ type(object).__name__ }}&gt;:
+    <h2>{% if index %}#{{index}}{% endif %} Object &lt;{{ type(object).__name__ }}&gt;:</h2>
         {{ show_object(object, path) }}
     <p>Raw data:
     <pre>
