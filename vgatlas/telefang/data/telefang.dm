@@ -50,7 +50,7 @@ gfx {
 }
 
 // 75:4b48
-denjuu @0x1d4b48 [NUM_DENJUU]{
+denjuu @0x1d4b48 [NUM_DENJUU] :Denjuu {
     id          = _i
     number      = id + 1
     name        = text.denjuu[id]
@@ -86,11 +86,11 @@ secret_denjuu @0x13c0d [14] {
     personality u8
 }
 
-types [NUM_TYPES] {
+types [NUM_TYPES] :Type {
     name    = text.types[_i]
 }
 
-moves @0x9cb29 [NUM_MOVES] {
+moves @0x9cb29 [NUM_MOVES] :Move {
     name            = text.moves[_i]
     power           u8
 }
