@@ -1,4 +1,4 @@
-{% macro block(object, path, in_list=False, depth=0, first=False, last=False, root=None) %}
+{% macro block(object, path=None, in_list=False, depth=0, first=False, last=False, root=None) %}
     {% if isinstance(object, datamijn.Palette) %}
         <div class="d-flex flex-row" style="display: inline-block;">
             {% for i, color in enumerate(object) %}
@@ -9,9 +9,9 @@
         <div class="p-2 {% if first %}border-top border-left border-bottom{% elif last %}border-top border-right border-bottom{% else %}border-top border-bottom{% endif %}"
             style="display: inline-block; width: 32px; height: 32px;
             background-color: {{object.hex}};"></div>
-    {% elif isinstance(object, datamijn.Image) %}
+    {% elif isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset): %}
         {% if hasattr(object, "_filename") %}
-            <img src="{{ url_for('telefang.static', filename=object._filename) }}">
+            <img src="{{ url_for(root+'.static', filename=object._filename) }}">
         {% else %}
             {{ object | inline }}
         {% endif %}
@@ -22,15 +22,19 @@
             <dl class="row card-body mb-0">
                 {% for key, value in object.items() %}
                     <dt class="col-sm-3">
-                        <a href="{{ url_for(root+'.object',
-                            path=pathjoin(path + [key])) }}">
-                            {{ key }}
-                        </a>
+                        {% if path %}
+                            <a href="{{ url_for(root+'.object',
+                              path=pathjoin(path + [key])) }}"
+                              data-toggle="tooltip" data-placement="top" title="&lt;{{ type(value).__name__ }}&gt;">
+                                {{ key }}
+                            </a>
+                        {% else %}
+                            <span data-toggle="tooltip" data-placement="top" title="&lt;{{ type(value).__name__ }}&gt;">
+                                {{ key }}
+                            </span>
+                        {% endif %}
                     </dt>
-                    <dd class="col-sm-7">{{ value | block(path=path + [key], depth=depth+1) }}</dd>
-                    <dd class="col-sm-2 text-muted">
-                        &lt;{{ type(value).__name__ }}&gt;
-                    </dd>
+                    <dd class="col-sm-9">{{ value | block(path=path + [key] if path else None, depth=depth+1) }}</dd>
                 {% endfor %}
             </dl>
         {% if not in_list %}
@@ -40,33 +44,37 @@
         {% if getattr(object._type, "_char", False) %} {# XXX #}
             {{ str(object) }}
         {% else %}
-            <ul class="list-group position-relative">
-                {% set show = 5 if (depth and len(object) > 5) else len(object) %}
-                {% for i, value in enumerate(object[:show]) %}
-                    <li class="list-group-item">
-                        <a href="{{ url_for(root+'.object',
-                          path=pathjoin(path + [i])) }}"
-                          class="position-absolute" style="left: 0px; top: -5px;">
-                            <span class="badge  badge-pill">{{i}}</span>
-                        </a>
-                        {{ value | block(path=path + [i],  in_list=True, depth=depth+1) }}
-                    </li>
-                {% endfor %}
-                {% if show == 5 and len(object) > 5 %}
-                    <details>
-                        <summary>{{ len(object)-show }} more items...</summary>
-                        {% for i, value in enumerate(object[show:]) %}
-                            <li class="list-group-item">
-                                <a href="{{ url_for(root+'.object',
-                                  path=pathjoin(path + [i+show])) }}">
-                                    <span class="badge badge-secondary badge-pill">{{i+show}}</span>
-                                </a>
-                                {{ value | block(path=path + [i+show],  in_list=True, depth=depth+1) }}
-                            </li>
-                        {% endfor %}
-                    </details>
-                {% endif %}
-            </ul>
+            {% if issubclass(object._type, datamijn.Container) %}
+                {{ object | table(path=path, root=root) }}
+            {% else %}
+                <ul class="list-group position-relative">
+                    {% set show = 5 if (depth and len(object) > 5) else len(object) %}
+                    {% for i, value in enumerate(object[:show]) %}
+                        <li class="list-group-item">
+                            <a {% if path %}href="{{ url_for(root+'.object',
+                              path=pathjoin(path + [i])) }}"{% endif %}
+                              class="position-absolute" style="left: 0px; top: -5px;">
+                                <span class="badge  badge-pill">{{i}}</span>
+                            </a>
+                            {{ value | block(path=path + [i] if path else None,  in_list=True, depth=depth+1) }}
+                        </li>
+                    {% endfor %}
+                    {% if show == 5 and len(object) > 5 %}
+                        <details>
+                            <summary>{{ len(object)-show }} more items...</summary>
+                            {% for i, value in enumerate(object[show:]) %}
+                                <li class="list-group-item">
+                                    <a {% if path %}href="{{ url_for(root+'.object',
+                                      path=pathjoin(path + [i+show])) }}"{% endif %}>
+                                        <span class="badge badge-secondary badge-pill">{{i+show}}</span>
+                                    </a>
+                                    {{ value | block(path=path + [i+show] if path else None,  in_list=True, depth=depth+1) }}
+                                </li>
+                            {% endfor %}
+                        </details>
+                    {% endif %}
+                </ul>
+            {% endif %}
         {% endif %}
     {% elif isinstance(object, datamijn.ForeignKey) %}
         {% set fpath = list(object._field_name) + [object._result] %}
@@ -81,6 +89,39 @@
         {{ object }}
     {% endif %}
 {% endmacro %}
+
+{% macro table(object, columns, path, root) %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                {% for name in columns %}
+                    <th scope="col">
+                        {{ name }}
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i, row in enumerate(object) %}
+                <tr>
+                    <th scope="row">
+                        <a href="{{ url_for(root+'.object',
+                                  path=pathjoin(path + [i])) }}">
+                            {{ i }}
+                        </a>
+                    </th>
+                    {% for name in columns %}
+                        <td>
+                            {{ getattr(row, name) | inline }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+
 {% macro breadcrumb() %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">

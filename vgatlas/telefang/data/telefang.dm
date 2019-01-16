@@ -15,12 +15,14 @@ NUM_DENJUU = 174
 NUM_TYPES = 6
 // XXX
 NUM_MOVES = 200
+NUM_PERSONALITIES=12
 
 text {
     // 75:4000
-    denjuu @0x1d4000 [NUM_DENJUU][8]Char
-    moves  @0x1d46f8 [NUM_MOVES] [8]Char
-    types  @0x1d5628 [NUM_TYPES] [4]Char
+    denjuu        @0x1d4000 [NUM_DENJUU]        [8]Char
+    moves         @0x1d46f8 [NUM_MOVES]         [8]Char
+    types         @0x1d5628 [NUM_TYPES]         [4]Char
+    personalities @0x1d7928 [NUM_PERSONALITIES] [8]Char
 }
 
 :DenjuuNo u8 match {
@@ -47,6 +49,9 @@ gfx {
         = pic | denjuu_palettes[_i]
     }
     !save denjuu
+    
+    zodiac @0x1f5b40 [NUM_PERSONALITIES][2][2]GBTile
+    !save zodiac
 }
 
 // 75:4b48
@@ -80,15 +85,21 @@ denjuu[].exp_items @0xa9a93 [NUM_DENJUU]{
     favorite_item   u8
 }
 
-secret_denjuu @0x13c0d [14] {
+secret_denjuu @0x13c0d [14] :SecretDenjuu {
     denjuu      DenjuuNo
     level       u8
     fd          u8
-    personality u8
+    personality u8  -> personalities
 }
 
 types [NUM_TYPES] :Type {
     name    = text.types[_i]
+}
+
+personalities [NUM_PERSONALITIES] :Personality {
+    _id     = _i
+    name    = text.personalities[_id]
+    icon    {=_id}   -> gfx.zodiac
 }
 
 moves @0x9cb29 [NUM_MOVES] :Move {

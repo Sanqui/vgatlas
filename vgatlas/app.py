@@ -21,7 +21,7 @@ app.jinja_env.globals.update(
     enumerate=enumerate,
     pathjoin=pathjoin,
     len=len,
-    list=list)
+    list=list, issubclass=issubclass)
 app.register_blueprint(ff1.views.blueprint)
 app.register_blueprint(telefang.views.blueprint)
 
@@ -31,6 +31,26 @@ def block_filter(env, object, path=[], in_list=False, depth=0, first=False, last
     if root == None: root = env.get('root', request.blueprint)
     return get_template_attribute("_macros.html", "block")(object=object, path=path, in_list=in_list,
         depth=depth, first=first, last=last, root=root)
+
+@app.template_filter('table')
+@contextfilter
+def table_filter(env, object, path=[], root=None, columns=[]):
+    if not isinstance(object, datamijn.Array):
+        raise TypeError("Can't make table out of {type(object).__name__}, only Array.")
+    #if not isinstance(object._type, datamijn.Container):
+    #    raise TypeError("Objects inside array must be containers (?)")
+    
+    # No columns were given to us, make a guess on what's appropriate.
+    if not columns:
+        columns = []
+        for name, type_ in object._type._contents:
+            if not issubclass(type_, datamijn.Container) and not issubclass(type_, datamijn.Array):
+                columns.append(name)
+    
+    print(type(object), object._type, type(object[0]))
+    
+    if root == None: root = env.get('root', request.blueprint)
+    return get_template_attribute("_macros.html", "table")(object=object, path=path, root=root, columns=columns)
 
 # TODO maybe this should really just be __str__ and __html__ of objects, in datamijn
 
@@ -45,15 +65,29 @@ def inline_filter(env, object):
                 { inline_filter(env, object._object) }
             </a>
         """)
+    elif isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset):
+        if hasattr(object, "_filename"):
+            return Markup(f"""<img src="{ url_for(root+'.static', filename=object._filename) }">""")
+        else:
+            return(str(object))
     elif isinstance(object, datamijn.Container):
+        out = []
+        if hasattr(object, "icon"):
+            out.append(inline_filter(env, object.icon))
         if hasattr(object, "name"):
-            return object.name
+            out.append(str(object.name))
         elif hasattr(object, "number"):
-            return f"{type(object).__name__} #{number}"
+            out.append(f"{type(object).__name__} #{number}")
+        else:
+            out.append(f"<{type(object).__name__}>")
+        
+        return " ".join(out)
+    elif isinstance(object, list):
+        # XXX make native datamijn String
+        if getattr(object._type, "_char", False):
+            return str(object)
         else:
             return f"<{type(object).__name__}>"
-    elif isinstance(object, list):
-        return f"<{type(object).__name__}>"
     elif object == None:
         return "-"
     else:

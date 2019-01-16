@@ -19,7 +19,7 @@ def before_request():
 
 @blueprint.route('/ff1/')
 def index():
-    return render_template('ff1/index.html')
+    return render_template('ff1/index.html', root="ff1", path=[], prev=None, next=None)
 """
 
 @blueprint.route('/ff1/monsters')
