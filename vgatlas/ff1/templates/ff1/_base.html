@@ -2,12 +2,6 @@
 
 {% block menu %}
     <div>[FF1 menu]</div>
-    <div>
-        {#
-        <a href="{{ url_for('ff1.monsters') }}">monsters</a> &bull;
-        <a href="{{ url_for('ff1.weapons') }}">weapons</a> &bull;
-        <a href="{{ url_for('ff1.monsters') }}">armor</a> &bull;
-        <a href="{{ url_for('ff1.monsters') }}">classes</a> &bull;
-        #}
-    </div>
+    {{ breadcrumb() }}
+    {{ prevnext() }}
 {% endblock %}

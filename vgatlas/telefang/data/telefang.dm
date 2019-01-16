@@ -54,6 +54,7 @@ denjuu @0x1d4b48 [NUM_DENJUU] :Denjuu {
     id          = _i
     number      = id + 1
     name        = text.denjuu[id]
+    pic         {= id} -> gfx.denjuu
     base_stats  Stats
     moves       [4]MoveNo
     unk1        u8

@@ -1,10 +1,9 @@
 {% extends 'telefang/_base.html' %}
-{% from 'object.html' import show_object with context %}
 
 {% set denjuu = object %}
 
 {% block content %}
-    <h2>Denjuu #{{id}} {{ link_denjuu(id) }}</h2>
+    <h2>Denjuu #{{id}} {{ denjuu | inline }}</h2>
     <div class="row">
         <div class="col-8">
             <div class="card">
@@ -43,17 +42,19 @@
             </div>
         </div>
         <div class="col">
-            <img src="{{ url_for('telefang.static', filename='gfx/denjuu/{}.png'.format(id)) }}" class="pic">
+            <div class="pic">
+                {{ denjuu.pic | block}}
+            </div>
             <div class="card">
                 <table class="table">
                     <thead class="card-header">
                         <tr><td>Move</td><td>Level</td></tr>
                     </thead>
                     <tbody>
-                        <tr><td>{{ show_object(denjuu.moves[0]) }}</td><td>-</td></tr>
-                        <tr><td>{{ denjuu.moves[1] }}</td><td>-</td></tr>
-                        <tr><td>{{ denjuu.moves[2] }}</td><td>{{ denjuu.move_learn_levels[0] }}</td></tr>
-                        <tr><td>{{ denjuu.moves[3] }}</td><td>{{ denjuu.move_learn_levels[1] }}</td></tr>
+                        <tr><td>{{ denjuu.moves[0] | inline }}</td><td>-</td></tr>
+                        <tr><td>{{ denjuu.moves[1] | inline }}</td><td>-</td></tr>
+                        <tr><td>{{ denjuu.moves[2] | inline }}</td><td>{{ denjuu.move_learn_levels[0] }}</td></tr>
+                        <tr><td>{{ denjuu.moves[3] | inline }}</td><td>{{ denjuu.move_learn_levels[1] }}</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -63,7 +64,7 @@
         <div class="col-4">
             <p><span class="badge badge-primary">Natural</span>
             {% if denjuu.evolution.level %}
-                Evolves to {{ link_denjuu(denjuu.evolution.denjuu.id) }} at lv. {{ denjuu.evolution.level }}.
+                Evolves to {{ denjuu.evolution.denjuu | inline }} at lv. {{ denjuu.evolution.level }}.
             {% else %}
                 Does not naturally evolve.
             {% endif %}

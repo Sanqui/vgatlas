@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f5b3a86cbae01b972b7e14e85b29a2aaaa2dd1e4d65c7f6af2272768b8260d31"
+            "sha256": "1f78540ec7b53ca512dd272ba31f5e0b59e28589cb752be841ed3f3b6144ee28"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -25,7 +25,7 @@
         },
         "datamijn": {
             "git": "file:///home/sanqui/romhacking/datamijn",
-            "ref": "ca3dbca5ddfcd359c81908c566ed12d96e8980e8"
+            "ref": "1fd06e59df52c3b1ad978684e39c13f81050fe2d"
         },
         "flask": {
             "hashes": [
