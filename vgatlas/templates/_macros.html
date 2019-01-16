@@ -21,20 +21,22 @@
         {% endif %}
             <dl class="row card-body mb-0">
                 {% for key, value in object.items() %}
-                    <dt class="col-sm-3">
-                        {% if path %}
-                            <a href="{{ url_for(root+'.object',
-                              path=pathjoin(path + [key])) }}"
-                              data-toggle="tooltip" data-placement="top" title="&lt;{{ type(value).__name__ }}&gt;">
-                                {{ key }}
-                            </a>
-                        {% else %}
-                            <span data-toggle="tooltip" data-placement="top" title="&lt;{{ type(value).__name__ }}&gt;">
-                                {{ key }}
-                            </span>
-                        {% endif %}
-                    </dt>
-                    <dd class="col-sm-9">{{ value | block(path=path + [key] if path else None, depth=depth+1) }}</dd>
+                    {% if not key.startswith("_") %}
+                        <dt class="col-sm-3">
+                            {% if path %}
+                                <a href="{{ url_for(root+'.object',
+                                  path=pathjoin(path + [key])) }}"
+                                  data-toggle="tooltip" data-placement="top" title="&lt;{{ type(value).__name__ }}&gt;">
+                                    {{ key }}
+                                </a>
+                            {% else %}
+                                <span data-toggle="tooltip" data-placement="top" title="&lt;{{ type(value).__name__ }}&gt;">
+                                    {{ key }}
+                                </span>
+                            {% endif %}
+                        </dt>
+                        <dd class="col-sm-9">{{ value | block(path=path + [key] if path else None, depth=depth+1) }}</dd>
+                    {% endif %}
                 {% endfor %}
             </dl>
         {% if not in_list %}
@@ -106,8 +108,8 @@
             {% for i, row in enumerate(object) %}
                 <tr>
                     <th scope="row">
-                        <a href="{{ url_for(root+'.object',
-                                  path=pathjoin(path + [i])) }}">
+                        <a {% if path %}href="{{ url_for(root+'.object',
+                                  path=pathjoin(path + [i])) }}">{% endif %}
                             {{ i }}
                         </a>
                     </th>

@@ -1,6 +1,6 @@
 from pprint import pformat
 
-from flask import Flask, render_template, Markup, url_for, get_template_attribute, request
+from flask import Flask, render_template, Markup, url_for, get_template_attribute, request, g
 from jinja2 import StrictUndefined, contextfilter
 import ff1
 import telefang
@@ -22,8 +22,11 @@ app.jinja_env.globals.update(
     pathjoin=pathjoin,
     len=len,
     list=list, issubclass=issubclass)
-app.register_blueprint(ff1.views.blueprint)
-app.register_blueprint(telefang.views.blueprint)
+
+game_modules = [ff1, telefang]
+
+for module in game_modules:
+    app.register_blueprint(module.views.blueprint)
 
 @app.template_filter('block')
 @contextfilter
@@ -40,14 +43,20 @@ def table_filter(env, object, path=[], root=None, columns=[]):
     #if not isinstance(object._type, datamijn.Container):
     #    raise TypeError("Objects inside array must be containers (?)")
     
+    typename = object._type.__name__
+    print(typename)
+    if not columns:
+        for module in game_modules:
+            if typename in getattr(module.views, 'table_formats', {}):
+                columns = module.views.table_formats[typename]
+    
     # No columns were given to us, make a guess on what's appropriate.
     if not columns:
         columns = []
         for name, type_ in object._type._contents:
-            if not issubclass(type_, datamijn.Container) and not issubclass(type_, datamijn.Array):
+            if not issubclass(type_, datamijn.Container) and not issubclass(type_, datamijn.Array)\
+              and name and not name.startswith("_"):
                 columns.append(name)
-    
-    print(type(object), object._type, type(object[0]))
     
     if root == None: root = env.get('root', request.blueprint)
     return get_template_attribute("_macros.html", "table")(object=object, path=path, root=root, columns=columns)

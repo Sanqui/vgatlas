@@ -10,6 +10,10 @@ telefang = datamijn.parse(dm, rom, "telefang/static/")
 max_stat = max(max([s for n,s in denjuu.base_stats.items() if n!='_io']) for denjuu in telefang.denjuu) + 4
 telefang.max_stat = max_stat
 
+table_formats = {
+    "Denjuu": "number pic name type".split()
+}
+
 blueprint = Blueprint('telefang', __name__,
     static_folder='static/', static_url_path="/telefang/static",
     template_folder='templates/')

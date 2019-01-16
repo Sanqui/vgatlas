@@ -16,6 +16,7 @@ NUM_TYPES = 6
 // XXX
 NUM_MOVES = 200
 NUM_PERSONALITIES=12
+NUM_ITEMS = 66
 
 text {
     // 75:4000
@@ -23,6 +24,7 @@ text {
     moves         @0x1d46f8 [NUM_MOVES]         [8]Char
     types         @0x1d5628 [NUM_TYPES]         [4]Char
     personalities @0x1d7928 [NUM_PERSONALITIES] [8]Char
+    items         @0x2e652  [NUM_ITEMS]         [8]Char
 }
 
 :DenjuuNo u8 match {
@@ -49,7 +51,20 @@ gfx {
         = pic | denjuu_palettes[_i]
     }
     !save denjuu
+    items @0xac000 [NUM_ITEMS] {
+        pic     [5][6]GBTile
+        
+        !if _i % 34 == 33 {
+            _       [0x40]byte
+        }
+        
+        //= pic | denjuu_palettes[_i]
+        = pic
+    }
+    !save items
     
+    item_icons @0xaacc6 [NUM_ITEMS][2][2]GBTile
+    !save item_icons
     zodiac @0x1f5b40 [NUM_PERSONALITIES][2][2]GBTile
     !save zodiac
 }
@@ -81,8 +96,13 @@ denjuu[].evolutions @0xaa0b1 [NUM_DENJUU]{
 }
 
 denjuu[].exp_items @0xa9a93 [NUM_DENJUU]{
-    items           [64]b1
-    favorite_item   u8
+    // TODO dict (see https://github.com/Sanqui/datamijn/issues/23)
+    items           [64] {
+        _id         = _i
+        item        {=_id} -> items
+        favorite    b1
+    }
+    favorite_item   u8  -> items
 }
 
 secret_denjuu @0x13c0d [14] :SecretDenjuu {
@@ -106,4 +126,13 @@ moves @0x9cb29 [NUM_MOVES] :Move {
     name            = text.moves[_i]
     power           u8
 }
+
+items [NUM_ITEMS] :Item {
+    _id     = _i
+    // XXX when #22 is fixed just text.items
+    name    = text['items'][_id]
+    pic     {=_id}   -> gfx.items
+    icon    {=_id}   -> gfx.item_icons
+}
+// TODO item prices
 

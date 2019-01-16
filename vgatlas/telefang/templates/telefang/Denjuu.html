@@ -6,6 +6,10 @@
     <h2>Denjuu #{{id}} {{ denjuu | inline }}</h2>
     <div class="row">
         <div class="col-8">
+            <dl class="row">
+                <dt class="col-2">Type</dt>
+                <dd class="col-4">{{ denjuu.type | inline }}</dd>
+            </dl>
             <div class="card">
                 <h5 class="card-header">Base stats</h5>
                 <ul class="list-group list-group-flush">
@@ -78,6 +82,10 @@
                 {% endif %}
             {% endfor %}
         </div>
+    </div>
+    <div>
+        <p>Exp items:
+        {{ denjuu.exp_items | block }}
     </div>
         
     <p>Raw data:
