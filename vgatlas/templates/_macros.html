@@ -15,6 +15,16 @@
         {% else %}
             {{ object | inline }}
         {% endif %}
+    {% elif isinstance(object, datamijn.String) %}
+        {% for token in object -%}
+            {%- if isinstance(token, str) -%}
+                {{- token -}}
+            {%- elif isinstance(token, datamijn.Terminator) -%}
+                
+            {%- else -%}
+                <span class="text-info">{{ token }}</span>
+            {%- endif -%}
+        {%- endfor %}
     {% elif isinstance(object, dict) %}
         {% if not in_list %}
         <div class="card">

@@ -1,10 +1,15 @@
 {% extends base_template %}
 
 {% block content %}
-    <h2>{% if index %}#{{index}}{% endif %} Object &lt;{{ type(object).__name__ }}&gt;:</h2>
+    <h2>
+        {% if index %}#{{index}}{% endif %}
+        {{ object | inline }}
+        <span class="text-muted">&lt;{{ type(object).__name__ }}&gt;</span>
+    </h2>
+        
         {{ object | block(path) }}
     <p>Raw data:
     <pre>
-{{ pformat(object) }}
+{{ repr(object) }}
     </pre>
 {% endblock %}

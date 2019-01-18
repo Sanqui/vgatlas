@@ -21,7 +21,7 @@ app.jinja_env.globals.update(
     enumerate=enumerate,
     pathjoin=pathjoin,
     len=len,
-    list=list, issubclass=issubclass)
+    list=list, issubclass=issubclass, repr=repr)
 
 game_modules = [ff1, telefang]
 
@@ -68,12 +68,13 @@ def table_filter(env, object, path=[], root=None, columns=[]):
 def inline_filter(env, object):
     root = env.get('root', request.blueprint)
     if isinstance(object, datamijn.ForeignKey):
+        if isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset):
+            return inline_filter(env, object._object)
+        
         return Markup(f"""
             <a href="{ url_for(root+'.object',
-              path=pathjoin(list(object._field_name) + [object._result])) }">
-                { inline_filter(env, object._object) }
-            </a>
-        """)
+              path=pathjoin(list(object._field_name) + [object._result])) }">""") \
+                + inline_filter(env, object._object) + Markup("</a>")
     elif isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset):
         if hasattr(object, "_filename"):
             return Markup(f"""<img src="{ url_for(root+'.static', filename=object._filename) }">""")
@@ -82,7 +83,7 @@ def inline_filter(env, object):
     elif isinstance(object, datamijn.Container):
         out = []
         if hasattr(object, "icon"):
-            out.append(inline_filter(env, object.icon))
+            out.append(Markup("<span class='icon'>") + inline_filter(env, object.icon._object) + Markup("</span>"))
         if hasattr(object, "name"):
             out.append(str(object.name))
         elif hasattr(object, "number"):
@@ -90,13 +91,11 @@ def inline_filter(env, object):
         else:
             out.append(f"<{type(object).__name__}>")
         
-        return " ".join(out)
+        return Markup(" ").join(out)
+    elif isinstance(object, datamijn.String):
+        return str(object)
     elif isinstance(object, list):
-        # XXX make native datamijn String
-        if getattr(object._type, "_char", False):
-            return str(object)
-        else:
-            return f"<{type(object).__name__}>"
+        return f"<{type(object).__name__}>"
     elif object == None:
         return "-"
     else:
