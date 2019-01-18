@@ -83,10 +83,21 @@
             {% endfor %}
         </div>
     </div>
-    <div>
-        <p>Exp items:
-        {{ denjuu.exp_items | block }}
-    </div>
+    <dl class="row">
+        <dt class="col-2">Exp. items</dt>
+        <dd class="col-10">
+            {% for item in denjuu.exp_items['items'] %}
+                {% if item.favorite %}
+                    {{ item.item | inline_block }}
+                {% endif %}
+            {% endfor %}
+        </dd>
+        
+        <dt class="col-2">Favorite item</dt>
+        <dd class="col-10">
+            {{ denjuu.exp_items.favorite_item | inline_block }}
+        </dd>
+    </dl>
         
     <p>Raw data:
     <pre>

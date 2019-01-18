@@ -63,6 +63,33 @@ def table_filter(env, object, path=[], root=None, columns=[]):
 
 # TODO maybe this should really just be __str__ and __html__ of objects, in datamijn
 
+@app.template_filter('inline_block')
+@contextfilter
+def inline_block_filter(env, object):
+    root = env.get('root', request.blueprint)
+    if isinstance(object, datamijn.ForeignKey):
+        if isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset):
+            return inline_filter(env, object._object)
+        
+        return Markup(f"""
+            <a class='card' style='display:inline-block; text-align: center;' href="{ url_for(root+'.object',
+              path=pathjoin(list(object._field_name) + [object._result])) }">""") \
+                + inline_block_filter(env, object._object) + Markup("</a>")
+    elif isinstance(object, datamijn.Container):
+        out = []
+        if hasattr(object, "pic"):
+            out.append(Markup("<span>") + inline_block_filter(env, object.pic._object) + Markup("</span>"))
+        if hasattr(object, "name"):
+            out.append(str(object.name))
+        elif hasattr(object, "number"):
+            out.append(f"{type(object).__name__} #{number}")
+        else:
+            out.append(f"<{type(object).__name__}>")
+        
+        return Markup("<br>").join(out)
+    else:
+        return inline_filter(env, object)
+
 @app.template_filter('inline')
 @contextfilter
 def inline_filter(env, object):

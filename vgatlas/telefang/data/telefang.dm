@@ -40,7 +40,12 @@ text {
 // ROM
 
 gfx {
-    denjuu_palettes @0x34800 [NUM_DENJUU]GBPalette
+    palettes {
+        denjuu     @0x34800 [NUM_DENJUU]GBPalette
+        items      @0x34f00 [NUM_ITEMS] GBPalette
+        item_icons @0x36d80 [NUM_ITEMS] GBPalette
+        zodiac     @0x35680 [NUM_PERSONALITIES]GBPalette
+    }
     denjuu @0x1ac000 [NUM_DENJUU] {
         pic     [7][8]GBTile
         
@@ -48,7 +53,7 @@ gfx {
             _       [0x100]byte
         }
         
-        = pic | denjuu_palettes[_i]
+        = pic | palettes.denjuu[_i]
     }
     !save denjuu
     items @0xac000 [NUM_ITEMS] {
@@ -58,14 +63,20 @@ gfx {
             _       [0x40]byte
         }
         
-        //= pic | denjuu_palettes[_i]
-        = pic
+        = pic | palettes['items'][_i]
     }
     !save items
     
-    item_icons @0xaacc6 [NUM_ITEMS][2][2]GBTile
+    // TODO sprites are transparent
+    item_icons @0xaacc6 [NUM_ITEMS] {
+        icon [2][2]GBTile
+        = icon | palettes.item_icons[_i]
+    }
     !save item_icons
-    zodiac @0x1f5b40 [NUM_PERSONALITIES][2][2]GBTile
+    zodiac @0x1f5b40 [NUM_PERSONALITIES] {
+        icon [2][2]GBTile
+        = icon | palettes.zodiac[_i]
+    }
     !save zodiac
 }
 
