@@ -88,7 +88,7 @@
         <dd class="col-10">
             {% for item in denjuu.exp_items['items'] %}
                 {% if item.favorite %}
-                    {{ item.item | inline_block }}
+                    {{ item.item | inline }}, 
                 {% endif %}
             {% endfor %}
         </dd>

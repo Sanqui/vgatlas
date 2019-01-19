@@ -39,46 +39,26 @@ text {
 
 // ROM
 
-gfx {
-    palettes {
-        denjuu     @0x34800 [NUM_DENJUU]GBPalette
-        items      @0x34f00 [NUM_ITEMS] GBPalette
-        item_icons @0x36d80 [NUM_ITEMS] GBPalette
-        zodiac     @0x35680 [NUM_PERSONALITIES]GBPalette
+_palettes {
+    denjuu     @0x34800 [NUM_DENJUU]GBPalette
+    items {
+        pics   @0x34f00 [NUM_ITEMS] GBPalette
+        icons  @0x36d80 [NUM_ITEMS] GBPalette
     }
-    denjuu @0x1ac000 [NUM_DENJUU] {
-        pic     [7][8]GBTile
-        
-        !if _i % 18 == 17 {
-            _       [0x100]byte
-        }
-        
-        = pic | palettes.denjuu[_i]
-    }
-    !save denjuu
-    items @0xac000 [NUM_ITEMS] {
-        pic     [5][6]GBTile
-        
-        !if _i % 34 == 33 {
-            _       [0x40]byte
-        }
-        
-        = pic | palettes['items'][_i]
-    }
-    !save items
-    
-    // TODO sprites are transparent
-    item_icons @0xaacc6 [NUM_ITEMS] {
-        icon [2][2]GBTile
-        = icon | palettes.item_icons[_i]
-    }
-    !save item_icons
-    zodiac @0x1f5b40 [NUM_PERSONALITIES] {
-        icon [2][2]GBTile
-        = icon | palettes.zodiac[_i]
-    }
-    !save zodiac
+    zodiac     @0x35680 [NUM_PERSONALITIES]GBPalette
 }
+
+_tiles {
+    denjuu    @0x1ac000  [NUM_DENJUU] GBBankFit | [7][8]GBTile
+    items {
+        pics  @0xac000   [NUM_ITEMS]  GBBankFit | [5][6]GBTile
+        icons @0xaacc6   [NUM_ITEMS] [2][2]GBTile
+    }
+    
+    zodiac    @0x1f5b40  [NUM_PERSONALITIES] [2][2]GBTile
+}
+gfx = _tiles | _palettes
+!save gfx
 
 // 75:4b48
 denjuu @0x1d4b48 [NUM_DENJUU] :Denjuu {
@@ -142,8 +122,8 @@ items [NUM_ITEMS] :Item {
     _id     = _i
     // XXX when #22 is fixed just text.items
     name    = text['items'][_id]
-    pic     {=_id}   -> gfx.items
-    icon    {=_id}   -> gfx.item_icons
+    pic     {=_id}   -> gfx.items.pics
+    icon    {=_id}   -> gfx.items.icons
 }
 // TODO item prices
 

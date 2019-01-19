@@ -58,6 +58,13 @@
         {% else %}
             {% if issubclass(object._type, datamijn.Container) %}
                 {{ object | table(path=path, root=root) }}
+            {% elif issubclass(object._type, datamijn.Image) %}
+                {% for i, value in enumerate(object) %}
+                    <a {% if path %}href="{{ url_for(root+'.object',
+                      path=pathjoin(path + [i])) }}"{% endif %}>
+                        {{ value | inline_block }}
+                    </a>
+                {% endfor %}
             {% else %}
                 <ul class="list-group position-relative">
                     {% set show = 5 if (depth and len(object) > 5) else len(object) %}
