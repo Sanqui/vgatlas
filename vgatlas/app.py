@@ -2,11 +2,21 @@ from pprint import pformat
 
 from flask import Flask, render_template, Markup, url_for, get_template_attribute, request, g
 from jinja2 import StrictUndefined, contextfilter
+import jinja2.exceptions
 import ff1
 import telefang
 from datamijn import datamijn
 
-pathjoin = lambda path: '/'.join(str(x) for x in path)
+def pathjoin(path):
+    pathlist = []
+    for part in path:
+        while isinstance(part, tuple) and len(part) == 2:
+            pathlist.append(part[0])
+            part = part[1]
+        while isinstance(part, tuple) and len(part) == 1:
+            part = part[0]
+        pathlist.append(part)
+    return '/'.join(str(x) for x in pathlist)
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
@@ -32,7 +42,15 @@ for module in game_modules:
 @contextfilter
 def block_filter(env, object, path=[], in_list=False, depth=0, first=False, last=False, root=None):
     if root == None: root = env.get('root', request.blueprint)
-    return get_template_attribute("_macros.html", "block")(object=object, path=path, in_list=in_list,
+    try:
+        out = get_template_attribute(f"{root}/_macros.html", "block")(object=object, path=path, in_list=in_list,
+            depth=depth, first=first, last=last, root=root)
+    except jinja2.exceptions.TemplateNotFound:
+        out = ""
+    if out.strip():
+        return out
+    else:
+        return get_template_attribute("_macros.html", "block")(object=object, path=path, in_list=in_list,
         depth=depth, first=first, last=last, root=root)
 
 @app.template_filter('table')

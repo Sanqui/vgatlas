@@ -11,7 +11,8 @@ max_stat = max(max([s for n,s in denjuu.base_stats.items() if n!='_io']) for den
 telefang.max_stat = max_stat
 
 table_formats = {
-    "Denjuu": "number pic name type".split()
+    "Denjuu": "number pic name type".split(),
+    "OWSprite": {"down": "block", "up": "block", "left": "block"}
 }
 
 blueprint = Blueprint('telefang', __name__,

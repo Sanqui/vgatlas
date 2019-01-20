@@ -12,11 +12,56 @@ NUM_DENJUU = 174
 }
 
 NUM_DENJUU = 174
+NUM_DENJUU_PICS = 175
+NUM_TFANGERS = 41
 NUM_TYPES = 6
 // XXX
 NUM_MOVES = 200
 NUM_PERSONALITIES=12
 NUM_ITEMS = 66
+NUM_SPRITES = 104
+
+defaultpal GBPalDefault
+
+:NatsumeBlock {
+    _modes   [16] b1
+    _bytes   [16] {=_modes[_i]} match {
+        0 => < byte
+        1 => {
+            loc     b11
+            loc     = -loc - 1
+            num     b5
+            num     = num + 3
+            b       |@loc [num] < byte
+        }
+    }
+}
+
+:NatsumeCompression {
+    _compressed     u8
+    _length         u16
+    _tiles          = _length/8/2
+    tiles {=_compressed} match {
+        0   => [_tiles]GBTile
+        1   => NatsumeBlock | [_tiles]GBTile
+    }
+    = tiles
+}
+
+
+map {
+    owtileset  @0x164000 NatsumeCompression
+    owextra    @0xe00c0 [16]GBTile
+    owtileset = owtileset + owextra
+    !save owtileset
+    
+    metatiles @0x178066 [0x9e][2][2]u8 -> map.owtileset
+    metatile_attributes @0x1782DE [0x9e][2][2]u8
+    
+    acre_data @0x1A0000 [50] :Acre {
+        tiles [8][10]u8 -> map.metatiles
+    }
+}
 
 text {
     // 75:4000
@@ -40,25 +85,41 @@ text {
 // ROM
 
 _palettes {
-    denjuu     @0x34800 [NUM_DENJUU]GBPalette
+    denjuu     @0x34800 [NUM_DENJUU_PICS]GBPalette
+    tfangers   @0x34d80 [NUM_TFANGERS]GBPalette
     items {
         pics   @0x34f00 [NUM_ITEMS] GBPalette
         icons  @0x36d80 [NUM_ITEMS] GBPalette
     }
     zodiac     @0x35680 [NUM_PERSONALITIES]GBPalette
+    
+    sprites [NUM_SPRITES] {
+        down [3] GBPalDefault
+        up   [3] GBPalDefault
+        left [3] GBPalDefault
+    }
 }
 
 _tiles {
-    denjuu    @0x1ac000  [NUM_DENJUU] GBBankFit | [7][8]GBTile
+    denjuu    @0x1ac000  [NUM_DENJUU_PICS] GBBankFit | [7][8]GBTile
+    _tfangers1  @0x1f8000  [36] GBBankFit | [7][8]GBTile
+    _tfangers2  @0x1f4000  [5] [7][8]GBTile
+    tfangers = _tfangers1 + _tfangers2
     items {
         pics  @0xac000   [NUM_ITEMS]  GBBankFit | [5][6]GBTile
         icons @0xaacc6   [NUM_ITEMS] [2][2]GBTile
     }
     
     zodiac    @0x1f5b40  [NUM_PERSONALITIES] [2][2]GBTile
+    
+    sprites @0xb8000 [NUM_SPRITES] GBBankFit | :OWSprite {
+        down    [3][2][2]GBTile
+        up      [3][2][2]GBTile
+        left    [3][2][2]GBTile
+    }
 }
 gfx = _tiles | _palettes
-!save gfx
+//!save gfx
 
 // 75:4b48
 denjuu @0x1d4b48 [NUM_DENJUU] :Denjuu {

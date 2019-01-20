@@ -1,0 +1,13 @@
+{% macro block(object, path=None, in_list=False, depth=0, first=False, last=False, root=None) %}
+    {% if type(object).__name__ == "Acre" %}
+        <table>
+            {% for y in range(16) %}
+                <tr>
+                    {% for x in range(20) %}
+                        <td class="">{{ object.tiles[y//2][x//2]._object[y%2][x%2] | block }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endmacro %}
