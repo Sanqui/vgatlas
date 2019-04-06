@@ -23,12 +23,12 @@
 :String     []Char
 
 :NESPtr {
-    ptr        u16
+    ptr        U16
     = ((_pos - 0x10) // 0x4000)*0x4000 + (ptr-0x8000) + 0x10
 }
 
 :NESBankPtr {
-    ptr        u16
+    ptr        U16
     ptr_abs    = ((_pos - 0x10) // 0x4000)*0x4000 + (_ptr) + 0x10
     = _ptr_abs
 }

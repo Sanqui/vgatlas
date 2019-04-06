@@ -1,4 +1,4 @@
-:Char        u8 char match {
+:Char        U8 char match {
      0x01 =>     '{1}\n'
      0x02 =>     '{2}\n'
      0x69 =>     '{69}'

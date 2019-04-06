@@ -1,9 +1,31 @@
-{% extends 'telefang/_base.html' %}
+{% macro thead(object, path, root) %}
+    <th>pic</th>
+    <th>num</th>
+    <th>name</th>
+    <th>type</th>
+    <th>moves</th>
+{% endmacro %}
 
-{% set denjuu = object %}
+{% macro trow(i, denjuu, url, path, root) %}
+    <td class="p-0" style="width: 52px;">{{ denjuu.pic | inline }}</td>
+    <th scope="row" style="width: 52px;">
+        <a {% if url %}href="{{ url }}"{% endif %}>
+            {{ denjuu.num }}
+        </a>
+    </th>
+    <td>{{ denjuu.name }}</td>
+    <td>{{ denjuu.type | inline }}</td>
+    <td>
+        {% for move in denjuu.moves %}
+            {{ move | inline }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    </td>
+{% endmacro %}
 
-{% block content %}
-    <h2>Denjuu #{{id}} {{ denjuu | inline }}</h2>
+{% macro block(object, path, in_list,
+            depth, first, last, id, root) %}
+    {% set denjuu = object %}
+    <h2>Denjuu #{{ denjuu.num }} {{ denjuu | inline }}</h2>
     <div class="row">
         <div class="col-8">
             <dl class="row">
@@ -47,7 +69,7 @@
         </div>
         <div class="col">
             <div class="pic">
-                {{ denjuu.pic | block}}
+                {{ denjuu.pic | block }}
             </div>
             <div class="card">
                 <table class="table">
@@ -103,4 +125,4 @@
     <pre>
 {{ pformat(denjuu) }}
     </pre>
-{% endblock %}
+{% endmacro %}

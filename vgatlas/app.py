@@ -3,7 +3,7 @@ from pprint import pformat
 from flask import Flask, render_template, Markup, url_for, get_template_attribute, request, g
 from jinja2 import StrictUndefined, contextfilter
 import jinja2.exceptions
-import ff1
+#import ff1
 import telefang
 from datamijn import datamijn
 
@@ -33,7 +33,8 @@ app.jinja_env.globals.update(
     len=len,
     list=list, issubclass=issubclass, repr=repr)
 
-game_modules = [ff1, telefang]
+#game_modules = [ff1, telefang]
+game_modules = [telefang]
 
 for module in game_modules:
     app.register_blueprint(module.views.blueprint)
@@ -42,15 +43,28 @@ for module in game_modules:
 @contextfilter
 def block_filter(env, object, path=[], in_list=False, depth=0, first=False, last=False, root=None):
     if root == None: root = env.get('root', request.blueprint)
+    
+    typename = type(object).__name__
+    template_path = root + "/" + typename + ".html"
+    try:
+        out = get_template_attribute(template_path, 'block')(object=object, path=path, in_list=in_list,
+            depth=depth, first=first, last=last, root=root)
+        return out
+    except (jinja2.exceptions.TemplateNotFound, ):
+        pass
+    
+    #if isinstance(object, datamijn.ListArray) and not isinstance(object, datamijn.Image):
+    #    return table_filter(env, object=object, path=path, root=root)
+    
     try:
         out = get_template_attribute(f"{root}/_macros.html", "block")(object=object, path=path, in_list=in_list,
             depth=depth, first=first, last=last, root=root)
+        if out.strip():
+            return out
     except jinja2.exceptions.TemplateNotFound:
-        out = ""
-    if out.strip():
-        return out
-    else:
-        return get_template_attribute("_macros.html", "block")(object=object, path=path, in_list=in_list,
+        pass
+    
+    return get_template_attribute("_macros.html", "block")(object=object, path=path, in_list=in_list,
         depth=depth, first=first, last=last, root=root)
 
 @app.template_filter('table')
@@ -62,7 +76,17 @@ def table_filter(env, object, path=[], root=None, columns=[]):
     #    raise TypeError("Objects inside array must be containers (?)")
     
     typename = object._type.__name__
-    print(typename)
+    
+    template_path = root + "/" + typename + ".html"
+    try:
+        thead_macro = get_template_attribute(template_path, 'thead')
+        trow_macro = get_template_attribute(template_path, 'trow')
+    except (jinja2.exceptions.TemplateNotFound, AttributeError):
+        thead_macro = None
+        trow_macro = None
+    
+    # (object=object, path=path, root=root)
+    
     if not columns:
         for module in game_modules:
             if typename in getattr(module.views, 'table_formats', {}):
@@ -77,7 +101,7 @@ def table_filter(env, object, path=[], root=None, columns=[]):
                 columns.append(name)
     
     if root == None: root = env.get('root', request.blueprint)
-    return get_template_attribute("_macros.html", "table")(object=object, path=path, root=root, columns=columns)
+    return get_template_attribute("_macros.html", "table")(object=object, path=path, root=root, columns=columns, thead_macro=thead_macro, trow_macro=trow_macro)
 
 # TODO maybe this should really just be __str__ and __html__ of objects, in datamijn
 

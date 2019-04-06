@@ -107,38 +107,47 @@
     {% endif %}
 {% endmacro %}
 
-{% macro table(object, columns, path, root) %}
+{% macro table(object, columns, path, root, thead_macro=None, trow_macro=None) %}
     <table class="table table-striped">
         <thead>
-            <tr>
-                <th scope="col">#</th>
-                {% for name in columns %}
-                    <th scope="col">
-                        {{ name }}
-                    </th>
-                {% endfor %}
-            </tr>
+            {% if thead_macro %}
+                {{ thead_macro(object, path, root) }}
+            {% else %}
+                <tr>
+                    <th scope="col">#</th>
+                    {% for name in columns %}
+                        <th scope="col">
+                            {{ name }}
+                        </th>
+                    {% endfor %}
+                </tr>
+            {% endif %}
         </thead>
         <tbody>
             {% for i, row in enumerate(object) %}
                 <tr>
-                    <th scope="row">
-                        <a {% if path %}href="{{ url_for(root+'.object',
-                                  path=pathjoin(path + [i])) }}">{% endif %}
-                            {{ i }}
-                        </a>
-                    </th>
-                    {% for name in columns %}
-                        <td>
-                            {% if isinstance(columns, dict) %}
-                                {% if columns[name] == "block" %}
-                                    {{ getattr(row, name) | block }}
-                                {% endif %}
-                            {% else %}
-                                {{ getattr(row, name) | inline }}
-                            {% endif %}
-                        </td>
-                    {% endfor %}
+                    {% set url = url_for(root+'.object', path=pathjoin(path + [i])) %}
+                    {% if thead_macro %}
+                        {{ trow_macro(i, row, url, path, root) }}
+                    {% else %}
+                            <th scope="row">
+                                <a {% if path %}href="{{ url_for(root+'.object',
+                                          path=pathjoin(path + [i])) }}">{% endif %}
+                                    {{ i }}
+                                </a>
+                            </th>
+                            {% for name in columns %}
+                                <td>
+                                    {% if isinstance(columns, dict) %}
+                                        {% if columns[name] == "block" %}
+                                            {{ getattr(row, name) | block }}
+                                        {% endif %}
+                                    {% else %}
+                                        {{ getattr(row, name) | inline }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
