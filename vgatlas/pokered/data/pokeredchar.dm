@@ -114,4 +114,8 @@
     0xFD => "7"
     0xFE => "8"
     0xFF => "9"
+    
+    x => :Unknown x
 }
+
+:String []Char

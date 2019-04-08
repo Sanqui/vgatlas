@@ -1,11 +1,11 @@
 {% extends 'pokered/_base.html' %}
 
+{% set root = "pokered" %}
+
 {% block content %}
     <h2>Pokémon Red</h2>
     Top-level menu
     <ul>
-        {% for key in g.pokered %}
-            <li><a href="/pokered/{{key}}">{{key}}</a>
-        {% endfor %}
+        {{ g.pokered | block(path=[], max_depth=0, root=root) }}
     </ul>
 {% endblock %}

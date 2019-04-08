@@ -1,8 +1,8 @@
-{% macro block(object, path=None, in_list=False, depth=0, first=False, last=False, root=None) %}
+{% macro block(object, path=None, in_list=False, depth=0, max_depth=5,  first=False, last=False, root=None) %}
     {% if isinstance(object, dmgfx.Palette) %}
         <div class="d-flex flex-row" style="display: inline-block;">
             {% for i, color in enumerate(object) %}
-                {{ color | block(path + [i], in_list=True, first=loop.first, last=loop.last) }}
+                {{ color | block(path + [i], in_list=True, first=loop.first, last=loop.last, root=root) }}
             {% endfor %}
         </div>
     {% elif isinstance(object, dmgfx.RGBColor) %}
@@ -29,11 +29,15 @@
         {% endif %}
             <dl class="row card-body mb-0">
                 {% for key, value in object.items() %}
+                    {% set obj_url = None %}
+                    {% if path != None %}
+                        {% set obj_url = url_for(root+'.object',
+                                  path=pathjoin(path + [key]))  %}
+                    {% endif %}
                     {% if not key.startswith("_") %}
                         <dt class="col-sm-3">
-                            {% if path %}
-                                <a href="{{ url_for(root+'.object',
-                                  path=pathjoin(path + [key])) }}"
+                            {% if obj_url %}
+                                <a href="{{ obj_url }}"
                                   data-toggle="tooltip" data-placement="top" title="&lt;{{ type(value).__name__ }}&gt;">
                                     {{ key }}
                                 </a>
@@ -46,7 +50,17 @@
                                 <br><small class="text-muted">&lt;{{ type(value).__name__ }}&gt;</small>
                             {% endif %}
                         </dt>
-                        <dd class="col-sm-9">{{ value | block(path=path + [key] if path else None, depth=depth+1) }}</dd>
+                        <dd class="col-sm-9">
+                            {% if depth >= max_depth %}
+                                {% if obj_url %}
+                                    <a href="{{ obj_url }}">...</a>
+                                {% else %}
+                                    ...
+                                {% endif %}
+                            {% else %}
+                                {{ value | block(path=path + [key] if path else None, depth=depth+1, max_depth=max_depth, root=root) }}
+                            {% endif %}
+                        </dd>
                     {% endif %}
                 {% endfor %}
             </dl>
@@ -57,50 +71,58 @@
         {% if getattr(object._type, "_char", False) %} {# XXX #}
             {{ str(object) }}
         {% else %}
-            {% if issubclass(object._type, dmtypes.Container) %}
+            {% if object | makes_a_good_table(path=path, root=root) %}
                 {{ object | table(path=path, root=root) }}
             {% elif issubclass(object._type, dmgfx.Image) or issubclass(object._type, dmgfx.Tileset) %}
                 {% for i, value in enumerate(object) %}
-                    <a {% if path %}href="{{ url_for(root+'.object',
+                    <a {% if path != None %}href="{{ url_for(root+'.object',
                       path=pathjoin(path + [i])) }}"{% endif %}>
                         {{ value | inline_block }}
                     </a>
                 {% endfor %}
             {% else %}
-                <ul class="list-group position-relative">
-                    {% set show = 5 if (depth and len(object) > 5) else len(object) %}
-                    {% for i, value in enumerate(object[:show]) %}
-                        <li class="list-group-item">
-                            <a {% if path %}href="{{ url_for(root+'.object',
-                              path=pathjoin(path + [i])) }}"{% endif %}
-                              class="position-absolute" style="left: 0px; top: -5px;">
-                                <span class="badge  badge-pill">{{i}}</span>
-                            </a>
-                            {{ value | block(path=path + [i] if path else None,  in_list=True, depth=depth+1) }}
-                        </li>
-                    {% endfor %}
-                    {% if show == 5 and len(object) > 5 %}
-                        <details>
-                            <summary>{{ len(object)-show }} more items...</summary>
-                            {% for i, value in enumerate(object[show:]) %}
-                                <li class="list-group-item">
-                                    <a {% if path %}href="{{ url_for(root+'.object',
-                                      path=pathjoin(path + [i+show])) }}"{% endif %}>
-                                        <span class="badge badge-secondary badge-pill">{{i+show}}</span>
-                                    </a>
-                                    {{ value | block(path=path + [i+show] if path else None,  in_list=True, depth=depth+1) }}
-                                </li>
-                            {% endfor %}
-                        </details>
-                    {% endif %}
-                </ul>
+                {% if depth >= max_depth %}
+                    ...
+                {% else %}
+                    <ul class="list-group position-relative">
+                        {% set show = 5 if (depth and len(object) > 5) else len(object) %}
+                        {% for i, value in enumerate(object[:show]) %}
+                            <li class="list-group-item">
+                                <a {% if path != None %}href="{{ url_for(root+'.object',
+                                  path=pathjoin(path + [i])) }}"{% endif %}
+                                  class="position-absolute" style="left: 0px; top: -12px;">
+                                    <span class="badge  badge-pill">{{i}}</span>
+                                </a>
+                                {% if value != None and object._type != type(value) %}
+                                    <strong>{{ type(value).__name__ }}</strong>
+                                {% endif %}
+                                {{ value | block(path=path + [i] if path != None else None,  in_list=True, depth=depth+1, max_depth=max_depth, root=root) }}
+                            </li>
+                        {% endfor %}
+                        {% if show == 5 and len(object) > 5 %}
+                            <details>
+                                <summary>{{ len(object)-show }} more items...</summary>
+                                {% for i, value in enumerate(object[show:]) %}
+                                    <li class="list-group-item">
+                                        <a {% if path != None %}href="{{ url_for(root+'.object',
+                                          path=pathjoin(path + [i+show])) }}"{% endif %}
+                                          class="position-absolute" style="left: 0px; top: -12px;">
+                                            <span class="badge  badge-pill">{{i+show}}</span>
+                                        </a>
+                                        {{ value | block(path=path + [i+show] if path != None else None,  in_list=True, depth=depth+1, max_depth=max_depth, root=root) }}
+                                    </li>
+                                {% endfor %}
+                            </details>
+                        {% endif %}
+                    </ul>
+                {% endif %}
             {% endif %}
         {% endif %}
     {% elif isinstance(object, dmtypes.ForeignKey) %}
         {% set fpath = list(object._field_name) + [object._result] %}
         <a href="{{ url_for(root+'.object', path=pathjoin(fpath)) }}">
             {% if depth == 0 %}
-                {{ object._object | block(path=fpath, depth=depth+1) }}
+                {{ object._object | block(path=fpath, depth=depth+1, max_depth=max_depth, root=root) }}
             {% else %}
                 {{ object._object | inline }}
             {% endif %}
@@ -129,12 +151,15 @@
         <tbody>
             {% for i, row in enumerate(object) %}
                 <tr>
-                    {% set url = url_for(root+'.object', path=pathjoin(path + [i])) %}
+                    {% set url = "" %}
+                    {% if path != None %}
+                        {% set url = url_for(root+'.object', path=pathjoin(path + [i])) %}
+                    {% endif %}
                     {% if thead_macro %}
                         {{ trow_macro(i, row, url, path, root) }}
                     {% else %}
                             <th scope="row">
-                                <a {% if path %}href="{{ url_for(root+'.object',
+                                <a {% if path != None %}href="{{ url_for(root+'.object',
                                           path=pathjoin(path + [i])) }}">{% endif %}
                                     {{ i }}
                                 </a>

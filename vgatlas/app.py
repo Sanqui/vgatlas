@@ -36,7 +36,8 @@ app.jinja_env.globals.update(
     enumerate=enumerate,
     pathjoin=pathjoin,
     len=len,
-    list=list, issubclass=issubclass, repr=repr)
+    list=list, issubclass=issubclass, repr=repr
+    )
 
 #game_modules = [ff1, telefang]
 #game_modules = [telefang]
@@ -47,14 +48,15 @@ for module in game_modules:
 
 @app.template_filter('block')
 @contextfilter
-def block_filter(env, object, path=[], in_list=False, depth=0, first=False, last=False, root=None):
+def block_filter(env, object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None):
+    if path == None: path = []
     if root == None: root = env.get('root', request.blueprint)
     
     typename = type(object).__name__
     template_path = root + "/" + typename + ".html"
     try:
         out = get_template_attribute(template_path, 'block')(object=object, path=path, in_list=in_list,
-            depth=depth, first=first, last=last, root=root)
+            depth=depth, max_depth=max_depth, first=first, last=last, root=root)
         return out
     except (jinja2.exceptions.TemplateNotFound, ):
         pass
@@ -64,23 +66,16 @@ def block_filter(env, object, path=[], in_list=False, depth=0, first=False, last
     
     try:
         out = get_template_attribute(f"{root}/_macros.html", "block")(object=object, path=path, in_list=in_list,
-            depth=depth, first=first, last=last, root=root)
+            depth=depth, max_depth=max_depth, first=first, last=last, root=root)
         if out.strip():
             return out
     except jinja2.exceptions.TemplateNotFound:
         pass
     
     return get_template_attribute("_macros.html", "block")(object=object, path=path, in_list=in_list,
-        depth=depth, first=first, last=last, root=root)
+        depth=depth, max_depth=max_depth, first=first, last=last, root=root)
 
-@app.template_filter('table')
-@contextfilter
-def table_filter(env, object, path=[], root=None, columns=[]):
-    if not isinstance(object, datamijn.Array):
-        raise TypeError("Can't make table out of {type(object).__name__}, only Array.")
-    #if not isinstance(object._type, datamijn.Container):
-    #    raise TypeError("Objects inside array must be containers (?)")
-    
+def get_table_data(env, object, path, root, columns):
     typename = object._type.__name__
     
     template_path = root + "/" + typename + ".html"
@@ -102,9 +97,34 @@ def table_filter(env, object, path=[], root=None, columns=[]):
     if not columns:
         columns = []
         for name, type_ in object._type._contents:
-            if not issubclass(type_, datamijn.Container) and not issubclass(type_, datamijn.Array)\
+            if not issubclass(type_, dmtypes.Container) and not issubclass(type_, dmtypes.Array)\
               and name and not name.startswith("_"):
                 columns.append(name)
+    
+    return columns, thead_macro, trow_macro
+
+@app.template_filter('makes_a_good_table')
+@contextfilter
+def makes_a_good_table(env, object, path=[], root=None, columns=[]):
+    if not issubclass(object._type, dmtypes.Container):
+        return False
+    else:
+        columns, thead_macro, trow_macro = get_table_data(env, object, path, root, columns)
+        if thead_macro and trow_macro:
+            return True
+        if len(columns):
+            return True
+        return False
+
+@app.template_filter('table')
+@contextfilter
+def table_filter(env, object, path=[], root=None, columns=[]):
+    if not isinstance(object, dmtypes.Array):
+        raise TypeError("Can't make table out of {type(object).__name__}, only Array.")
+    #if not isinstance(object._type, datamijn.Container):
+    #    raise TypeError("Objects inside array must be containers (?)")
+    
+    columns, thead_macro, trow_macro = get_table_data(env, object, path, root, columns)
     
     if root == None: root = env.get('root', request.blueprint)
     return get_template_attribute("_macros.html", "table")(object=object, path=path, root=root, columns=columns, thead_macro=thead_macro, trow_macro=trow_macro)
