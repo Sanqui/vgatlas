@@ -1,23 +1,23 @@
 {% macro block(object, path=None, in_list=False, depth=0, first=False, last=False, root=None) %}
-    {% if isinstance(object, datamijn.Palette) %}
+    {% if isinstance(object, dmgfx.Palette) %}
         <div class="d-flex flex-row" style="display: inline-block;">
             {% for i, color in enumerate(object) %}
                 {{ color | block(path + [i], in_list=True, first=loop.first, last=loop.last) }}
             {% endfor %}
         </div>
-    {% elif isinstance(object, datamijn.RGBColor) %}
+    {% elif isinstance(object, dmgfx.RGBColor) %}
         <div class="p-2 {% if first %}border-top border-left border-bottom{% elif last %}border-top border-right border-bottom{% else %}border-top border-bottom{% endif %}"
             style="display: inline-block; width: 32px; height: 32px;
             background-color: {{object.hex}};"></div>
-    {% elif isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset) and hasattr(object, '_filename'): %}
+    {% elif isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset) and hasattr(object, '_filename'): %}
         <img src="{{ url_for(root+'.static', filename=object._filename) }}">
-    {% elif isinstance(object, datamijn.Tile) %}
+    {% elif isinstance(object, dmgfx.Tile) %}
         <img src="{{ url_for(root+'.static', filename=object._filename) }}">
-    {% elif isinstance(object, datamijn.String) %}
+    {% elif isinstance(object, dmtypes.String) %}
         {% for token in object -%}
             {%- if isinstance(token, str) -%}
                 {{- token -}}
-            {%- elif isinstance(token, datamijn.Terminator) -%}
+            {%- elif isinstance(token, dmtypes.Terminator) -%}
                 
             {%- else -%}
                 <span class="text-info">{{ token }}</span>
@@ -42,6 +42,9 @@
                                     {{ key }}
                                 </span>
                             {% endif %}
+                            {% if isinstance(value, dmtypes.Container) or isinstance(value, dmtypes.Array) %}
+                                <br><small class="text-muted">&lt;{{ type(value).__name__ }}&gt;</small>
+                            {% endif %}
                         </dt>
                         <dd class="col-sm-9">{{ value | block(path=path + [key] if path else None, depth=depth+1) }}</dd>
                     {% endif %}
@@ -54,9 +57,9 @@
         {% if getattr(object._type, "_char", False) %} {# XXX #}
             {{ str(object) }}
         {% else %}
-            {% if issubclass(object._type, datamijn.Container) %}
+            {% if issubclass(object._type, dmtypes.Container) %}
                 {{ object | table(path=path, root=root) }}
-            {% elif issubclass(object._type, datamijn.Image) or issubclass(object._type, datamijn.Tileset) %}
+            {% elif issubclass(object._type, dmgfx.Image) or issubclass(object._type, dmgfx.Tileset) %}
                 {% for i, value in enumerate(object) %}
                     <a {% if path %}href="{{ url_for(root+'.object',
                       path=pathjoin(path + [i])) }}"{% endif %}>
@@ -93,7 +96,7 @@
                 </ul>
             {% endif %}
         {% endif %}
-    {% elif isinstance(object, datamijn.ForeignKey) %}
+    {% elif isinstance(object, dmtypes.ForeignKey) %}
         {% set fpath = list(object._field_name) + [object._result] %}
         <a href="{{ url_for(root+'.object', path=pathjoin(fpath)) }}">
             {% if depth == 0 %}

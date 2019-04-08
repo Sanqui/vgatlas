@@ -1,0 +1,7 @@
+*.gbc
+*.sym
+datamijn_out/
+
+ff1/static/
+telefang/static/
+pokered/static/

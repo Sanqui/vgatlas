@@ -4,8 +4,11 @@ from flask import Flask, render_template, Markup, url_for, get_template_attribut
 from jinja2 import StrictUndefined, contextfilter
 import jinja2.exceptions
 #import ff1
-import telefang
-from datamijn import datamijn
+#import telefang
+import pokered
+import datamijn
+import datamijn.dmtypes as dmtypes
+import datamijn.gfx as dmgfx
 
 def pathjoin(path):
     pathlist = []
@@ -28,13 +31,16 @@ app.jinja_env.globals.update(
     hasattr=hasattr, getattr=getattr,
     str=str,
     datamijn=datamijn,
+    dmtypes=dmtypes,
+    dmgfx=dmgfx,
     enumerate=enumerate,
     pathjoin=pathjoin,
     len=len,
     list=list, issubclass=issubclass, repr=repr)
 
 #game_modules = [ff1, telefang]
-game_modules = [telefang]
+#game_modules = [telefang]
+game_modules = [pokered]
 
 for module in game_modules:
     app.register_blueprint(module.views.blueprint)
@@ -109,15 +115,15 @@ def table_filter(env, object, path=[], root=None, columns=[]):
 @contextfilter
 def inline_block_filter(env, object):
     root = env.get('root', request.blueprint)
-    if isinstance(object, datamijn.ForeignKey):
-        if isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset):
+    if isinstance(object, dmtypes.ForeignKey):
+        if isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
             return inline_filter(env, object._object)
         
         return Markup(f"""
             <a class='card' style='display:inline-block; text-align: center;' href="{ url_for(root+'.object',
               path=pathjoin(list(object._field_name) + [object._result])) }">""") \
                 + inline_block_filter(env, object._object) + Markup("</a>")
-    elif isinstance(object, datamijn.Container):
+    elif isinstance(object, dmgfx.Container):
         out = []
         if hasattr(object, "pic"):
             out.append(Markup("<span>") + inline_block_filter(env, object.pic._object) + Markup("</span>"))
@@ -136,20 +142,20 @@ def inline_block_filter(env, object):
 @contextfilter
 def inline_filter(env, object):
     root = env.get('root', request.blueprint)
-    if isinstance(object, datamijn.ForeignKey):
-        if isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset):
+    if isinstance(object, dmtypes.ForeignKey):
+        if isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
             return inline_filter(env, object._object)
         
         return Markup(f"""
             <a href="{ url_for(root+'.object',
               path=pathjoin(list(object._field_name) + [object._result])) }">""") \
                 + inline_filter(env, object._object) + Markup("</a>")
-    elif isinstance(object, datamijn.Image) or isinstance(object, datamijn.Tileset):
+    elif isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
         if hasattr(object, "_filename"):
             return Markup(f"""<img src="{ url_for(root+'.static', filename=object._filename) }">""")
         else:
             return(str(object))
-    elif isinstance(object, datamijn.Container):
+    elif isinstance(object, dmtypes.Container):
         out = []
         if hasattr(object, "icon"):
             out.append(Markup("<span class='icon'>") + inline_filter(env, object.icon._object) + Markup("</span>"))
@@ -161,7 +167,7 @@ def inline_filter(env, object):
             out.append(f"<{type(object).__name__}>")
         
         return Markup(" ").join(out)
-    elif isinstance(object, datamijn.String):
+    elif isinstance(object, dmtypes.String):
         return str(object)
     elif isinstance(object, list):
         return f"<{type(object).__name__}>"
