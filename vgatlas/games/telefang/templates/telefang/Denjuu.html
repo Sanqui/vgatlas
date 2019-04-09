@@ -23,7 +23,7 @@
 {% endmacro %}
 
 {% macro block(object, path, in_list,
-            depth, first, last, id, root) %}
+            depth, max_depth, first, last, id, root) %}
     {% set denjuu = object %}
     <h2>Denjuu #{{ denjuu.num }} {{ denjuu | inline }}</h2>
     <div class="row">

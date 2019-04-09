@@ -121,7 +121,6 @@
     {% elif isinstance(object, dmtypes.ForeignKey) %}
         {% set fpath = list(object._field_name) + [object._result] %}
             {% if depth <= max_depth and not hasattr(object._object, "name") %}
-                {{ object | inline }}
                 {{ object._object | block(path=fpath, depth=depth+1, max_depth=max_depth, root=root) }}
             {% else %}
                 {{ object | inline }}

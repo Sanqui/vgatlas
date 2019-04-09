@@ -1,4 +1,4 @@
-{% macro block(object, path=None, in_list=False, depth=0, first=False, last=False, root=None) %}
+{% macro block(object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None) %}
     {% if type(object).__name__ == "Acre" %}
         <table>
             {% for y in range(16) %}

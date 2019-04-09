@@ -4,8 +4,6 @@
     <h2>Telefang</h2>
     Top-level menu
     <ul>
-        {% for key in g.telefang %}
-            <li><a href="/telefang/{{key}}">{{key}}</a>
-        {% endfor %}
+        {{ g.telefang | block(path=[], max_depth=0, root=root) }}
     </ul>
 {% endblock %}
