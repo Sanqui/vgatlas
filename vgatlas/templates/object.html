@@ -4,7 +4,7 @@
     <h2>
         {% if index %}#{{index}}{% endif %}
         {{ object | inline }}
-        <span class="text-muted">&lt;{{ type(object).__name__ }}&gt;</span>
+        <small class="text-muted">&lt;{{ type(object).__name__ }}&gt;</small>
     </h2>
         
         {{ object | block(path) }}

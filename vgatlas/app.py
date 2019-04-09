@@ -166,7 +166,7 @@ def inline_filter(env, object):
         if isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
             return inline_filter(env, object._object)
         
-        return Markup(f"""
+        return Markup(f"""⤳ 
             <a href="{ url_for(root+'.object',
               path=pathjoin(list(object._field_name) + [object._result])) }">""") \
                 + inline_filter(env, object._object) + Markup("</a>")
@@ -191,6 +191,8 @@ def inline_filter(env, object):
         return str(object)
     elif isinstance(object, list):
         return f"<{type(object).__name__}>"
+    elif isinstance(object, dmtypes.B1) and object._num_bits == 1:
+        return Markup(("<span class='text-danger'>✗</span>", "<span class='text-success'>✔</span>")[object])
     elif object == None:
         return "-"
     else:

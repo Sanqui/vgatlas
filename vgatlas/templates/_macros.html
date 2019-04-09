@@ -46,7 +46,7 @@
                                     {{ key }}
                                 </span>
                             {% endif %}
-                            {% if isinstance(value, dmtypes.Container) or isinstance(value, dmtypes.Array) %}
+                            {% if isinstance(value, dmtypes.Container) or isinstance(value, dmtypes.Array) and not isinstance(value, dmtypes.String) %}
                                 <br><small class="text-muted">&lt;{{ type(value).__name__ }}&gt;</small>
                             {% endif %}
                         </dt>
@@ -120,13 +120,14 @@
         {% endif %}
     {% elif isinstance(object, dmtypes.ForeignKey) %}
         {% set fpath = list(object._field_name) + [object._result] %}
-        <a href="{{ url_for(root+'.object', path=pathjoin(fpath)) }}">
-            {% if depth == 0 %}
+            {% if depth <= max_depth and not hasattr(object._object, "name") %}
+                {{ object | inline }}
                 {{ object._object | block(path=fpath, depth=depth+1, max_depth=max_depth, root=root) }}
             {% else %}
-                {{ object._object | inline }}
+                {{ object | inline }}
             {% endif %}
-        </a>
+    {% elif isinstance(object, dmtypes.B1) and object._num_bits == 1 %}
+        {{ object | inline }}
     {% else %}
         {{ object }}
     {% endif %}

@@ -24,7 +24,7 @@ text {
 }
 
 
-pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
+_pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
     num             U8
     stats {
         hp          U8
@@ -51,8 +51,8 @@ pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
     tms             [64]B1
 }
 
-evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :EvosMoves {
-    evolutions [] U8 match {
+_pokemon_evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :PokemonEvosMoves {
+    evolutions [] :Evolution U8 match {
         0 => Terminator
         1 => :LevelEvolution {
             level       U8
@@ -70,25 +70,53 @@ evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :EvosMoves {
     }
     learnset [] U8 match {
         0 => Terminator
-        n => {
+        n => :TaughtMove {
             level   n
             move    MaybeU8 -> moves
         }    
     }
 }
 
-pokemon [NUM_POKEMON] {
+pokemon @sym.PokedexOrder [NUM_POKEMON] :Pokemon {
+    id              I
+    num             U8
     name            text.pokemon[I]
+    base_stats      (num - 1) -> _pokemon_base_stats
+    evos_moves      id        -> _pokemon_evos_moves
 }
 
-types [NUM_TYPES] {
+type_effectiveness @sym.TypeEffects [] U8 match {
+    0xff    => Terminator
+    num     => {
+        type_attacking  num -> types
+        type_defending  U8  -> types
+        multiplier      U8
+    }
+}
+
+types [NUM_TYPES] :Type {
     name            text.types[I]
 }
 
-moves [NUM_MOVES] {
+moves @sym.Moves [NUM_MOVES] :Move {
     name            text.moves[I]
+    animation       U8
+    effect          U8
+    power           U8
+    type            U8 -> types
+    accuracy        U8
+    pp              U8
 }
 
-items [NUM_ITEMS] {
+:BCD3  100000*B4 + 10000*B4 + 1000*B4 + 100*B4 + 10*B4 + 1*B4
+:Money BCD3 
+
+_key_items      @sym.KeyItemBitfield [NUM_ITEMS]B1 
+_item_prices    @sym.ItemPrices      [NUM_ITEMS]Money
+
+items [NUM_ITEMS] :Item {
+    id              I
     name            text.items[I]
+    key_item        id -> _key_items
+    price           id -> _item_prices
 }
