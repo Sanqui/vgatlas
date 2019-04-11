@@ -7,6 +7,7 @@
 :NUM_MOVES        165
 :NUM_ITEMS        97
 :NUM_TYPES        27
+:NUM_TRAINERS     47
 
 :MaybeU8 U8 match {
     0 => Null
@@ -17,10 +18,12 @@
 :PtrString   @GBPtr String
 
 text {
-    pokemon     @sym.MonsterNames   [NUM_POKEMON][10]Char
-    moves       @sym.MoveNames      [NUM_MOVES]  String
-    items       @sym.ItemNames      [NUM_ITEMS]  String
-    types       @sym.TypeNames      [NUM_TYPES]  PtrString
+    pokemon     @sym.MonsterNames   [NUM_POKEMON] [10]Char
+    moves       @sym.MoveNames      [NUM_MOVES]   String
+    items       @sym.ItemNames      [NUM_ITEMS]   String
+    trainers    @sym.TrainerNames   [NUM_TRAINERS]String
+    maps        @sym.PalletTownName [53]          String
+    types       @sym.TypeNames      [NUM_TYPES]   PtrString
 }
 
 
@@ -60,7 +63,7 @@ _pokemon_evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :PokemonEvos
         }
         2 => :ItemEvolution {
             item        MaybeU8 -> items
-            min_level   U8
+            level       U8
             pokemon     MaybeU8 -> pokemon
         }
         3 => :TradeEvolution {
@@ -96,6 +99,15 @@ type_effectiveness @sym.TypeEffects [] U8 match {
 
 types [NUM_TYPES] :Type {
     name            text.types[I]
+}
+
+_trainer_data_pointers @sym.TrainerDataPointers [NUM_TRAINERS] GBPtr
+
+trainer_classes [NUM_TRAINERS] :TrainerClass {
+    name            text.trainers[I]
+    trainers        @(_trainer_data_pointers[I]) [2] {
+        x U8
+    }
 }
 
 moves @sym.Moves [NUM_MOVES] :Move {

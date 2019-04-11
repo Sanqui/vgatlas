@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 flask = "*"
-datamijn = {git="/home/sanqui/romhacking/datamijn", "ref"="0.3.6"}
+datamijn = {git="/home/sanqui/romhacking/datamijn", "ref"="0.3.9"}
 
 [dev-packages]
 

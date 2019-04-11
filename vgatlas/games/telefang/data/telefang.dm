@@ -8,7 +8,7 @@
 :NUM_MOVES       200
 :NUM_PERSONALITIES 12
 :NUM_ITEMS       66
-:NUM_SPRITES     104
+:NUM_SPRITES     105
 
 defaultpal GBPalDefault
 
@@ -45,6 +45,7 @@ map {
     !save owtileset
     
     metatiles @0x178066 [0x9e][2][2]U8 -> map.owtileset
+    //!save metatiles
     metatile_attributes @0x1782DE [0x9e][2][2]U8
     
     acre_data @0x1A0000 [50] :Acre {

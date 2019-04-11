@@ -10,7 +10,8 @@ import datamijn.gfx as dmgfx
 
 from filters import setup_filters, pathjoin
 
-GAMES = "telefang pokered".split()
+#GAMES = "telefang pokered".split()
+GAMES = "pokered".split()
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
@@ -44,4 +45,4 @@ def index():
     return render_template("index.html")
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)
