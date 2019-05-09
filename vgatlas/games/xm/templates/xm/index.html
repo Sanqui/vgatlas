@@ -1,0 +1,11 @@
+{% extends 'xm/_base.html' %}
+
+{% set root = "xm" %}
+
+{% block content %}
+    <h2>XM</h2>
+    Top-level menu
+    <ul>
+        {{ g.xm | block(path=[], max_depth=5, root=root) }}
+    </ul>
+{% endblock %}

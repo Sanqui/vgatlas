@@ -49,9 +49,12 @@ _pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
     
     starting_moves  [4]MaybeU8 -> moves
     
-    growth_rate     U8
+    growth_rate     U8 -> growth_rates
     
     tms             [64]B1
+}
+
+growth_rates :GrowhRates {
 }
 
 _pokemon_evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :PokemonEvosMoves {
