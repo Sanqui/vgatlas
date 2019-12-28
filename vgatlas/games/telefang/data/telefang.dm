@@ -41,8 +41,8 @@ defaultpal GBPalDefault
 map {
     owtileset   @0x164000 NatsumeCompressedGfx
     owextra     @0xe00c0 [16]GBTile
-    owtileset   owtileset + owextra
-    !save owtileset
+    //owtileset   owtileset + owextra
+    //!save owtileset
     
     metatiles @0x178066 [0x9e][2][2]U8 -> map.owtileset
     //!save metatiles
@@ -83,33 +83,33 @@ _palettes {
     }
     zodiac     @0x35680 [NUM_PERSONALITIES]GBPalette
     
-    sprites [NUM_SPRITES] {
-        down [3] GBPalDefault
-        up   [3] GBPalDefault
-        left [3] GBPalDefault
-    }
+    //sprites [NUM_SPRITES] {
+    //    down [3] GBPalDefault
+    //    up   [3] GBPalDefault
+    //    left [3] GBPalDefault
+    //}
 }
 
-_tiles {
-    denjuu    @0x1ac000  [NUM_DENJUU_PICS] (GBBankFit | [7][8]GBTile)
-    _tfangers1  @0x1f8000  [36] (GBBankFit | [7][8]GBTile)
-    _tfangers2  @0x1f4000  [5] [7][8]GBTile
-    tfangers  _tfangers1 + _tfangers2
-    items {
-        pics  @0xac000   [NUM_ITEMS]  (GBBankFit | [5][6]GBTile)
-        icons @0xaacc6   [NUM_ITEMS] [2][2]GBTile
-    }
+//_tiles {
+//    denjuu    @0x1ac000  [NUM_DENJUU_PICS] (GBBankFit | [7][8]GBTile)
+//    _tfangers1  @0x1f8000  [36] (GBBankFit | [7][8]GBTile)
+//    _tfangers2  @0x1f4000  [5] [7][8]GBTile
+//    tfangers  _tfangers1 + _tfangers2
+//    items {
+//        pics  @0xac000   [NUM_ITEMS]  (GBBankFit | [5][6]GBTile)
+//        icons @0xaacc6   [NUM_ITEMS] [2][2]GBTile
+//    }
+//    
+//    zodiac    @0x1f5b40  [NUM_PERSONALITIES] [2][2]GBTile
     
-    zodiac    @0x1f5b40  [NUM_PERSONALITIES] [2][2]GBTile
-    
-    sprites @0xb8000 [NUM_SPRITES] (GBBankFit | :OWSprite {
-        down    [3][2][2]GBTile
-        up      [3][2][2]GBTile
-        left    [3][2][2]GBTile
-    })
-}
-gfx _tiles | _palettes
-!save gfx
+    //sprites @0xb8000 [NUM_SPRITES] (GBBankFit | :OWSprite {
+    //    down    [3][2][2]GBTile
+    //    up      [3][2][2]GBTile
+    //    left    [3][2][2]GBTile
+    //})
+//}
+//gfx _tiles | _palettes
+//!save gfx
 
 :Stats {
     hp              U8

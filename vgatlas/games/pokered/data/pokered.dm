@@ -26,6 +26,9 @@ text {
     types       @sym.TypeNames      [NUM_TYPES]   PtrString
 }
 
+gfx {
+    font @sym.FontGraphics [256]Tile1BPP
+}
 
 _pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
     num             U8
@@ -54,7 +57,14 @@ _pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
     tms             [64]B1
 }
 
-growth_rates :GrowhRates {
+// see https://github.com/pret/pokered/blob/6ba3765c5932996f5da6417ae703794ff10bb1cb/engine/experience.asm#L149
+growth_rates @sym.GrowthRateTable [6] :GrowthRate {
+    a B4
+    b B4
+    s B1
+    c B7
+    d U8
+    e U8
 }
 
 _pokemon_evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :PokemonEvosMoves {
@@ -86,7 +96,7 @@ _pokemon_evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :PokemonEvos
 pokemon @sym.PokedexOrder [NUM_POKEMON] :Pokemon {
     id              I
     num             U8
-    name            text.pokemon[I]
+    name            id -> text.pokemon
     base_stats      (num - 1) -> _pokemon_base_stats
     evos_moves      id        -> _pokemon_evos_moves
 }
@@ -100,18 +110,53 @@ type_effectiveness @sym.TypeEffects [] U8 match {
     }
 }
 
+type_effectiveness2 @sym.TypeEffects [] (@Pos U8) match {
+    0xff => Terminator
+    _    => {
+        type_attacking  U8 -> types
+        type_defending  U8 -> types
+        multiplier      U8
+    }
+}
+
 types [NUM_TYPES] :Type {
     name            text.types[I]
 }
 
-_trainer_data_pointers @sym.TrainerDataPointers [NUM_TRAINERS] GBPtr
-
-trainer_classes [NUM_TRAINERS] :TrainerClass {
-    name            text.trainers[I]
-    trainers        @(_trainer_data_pointers[I]) [2] {
-        x U8
+:TrainerParty U8 match {
+    0xff => [] U8 match {
+        0x00    => Terminator
+        level   => :PartyPokemon {
+            level   level
+            pokemon (U8 - 1) -> Pokemon
+        }
+    }
+    level => {
+        level   level
+        party   [] U8 match {
+            0x00    => Terminator
+            pokemon => (pokemon - 1) -> pokemon
+        }
     }
 }
+
+trainer_classes  @sym.TrainerDataPointers [NUM_TRAINERS] :TrainerClass {
+    name            text.trainers[I]
+    _ptr            GBPtr
+    _nextptr        @Pos GBPtr
+    _last           I + 1 == NUM_TRAINERS
+    trainers        @_ptr _last match {
+        1 => [1] TrainerParty
+        0 => [] (Pos == _nextptr) match {
+            1 => Terminator
+            0 => TrainerParty
+        }
+    }
+}
+//Pos match {
+//            nextptr => Terminator
+//            _       => TrainerParty
+//        }
 
 moves @sym.Moves [NUM_MOVES] :Move {
     name            text.moves[I]

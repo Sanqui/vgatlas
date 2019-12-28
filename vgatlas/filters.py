@@ -49,7 +49,7 @@ def setup_filters(app, game_modules):
             depth=depth, max_depth=max_depth, first=first, last=last, root=root)
 
     def get_table_data(env, object, path, root, columns):
-        typename = object._type.__name__
+        typename = object._parsetype.__name__
         
         template_path = root + "/" + typename + ".html"
         try:
@@ -69,8 +69,8 @@ def setup_filters(app, game_modules):
         # No columns were given to us, make a guess on what's appropriate.
         if not columns:
             columns = []
-            for name, type_ in object._type._contents:
-                if not issubclass(type_, dmtypes.Container) and not issubclass(type_, dmtypes.Array)\
+            for name, type_ in object._parsetype._contents.items():
+                if not issubclass(type_, dmtypes.Struct) and not issubclass(type_, dmtypes.Array)\
                   and name and not name.startswith("_"):
                     columns.append(name)
         
@@ -79,7 +79,7 @@ def setup_filters(app, game_modules):
     @app.template_filter('makes_a_good_table')
     @contextfilter
     def makes_a_good_table(env, object, path=[], root=None, columns=[]):
-        if not issubclass(object._type, dmtypes.Container):
+        if not issubclass(object._parsetype, dmtypes.Struct):
             return False
         else:
             columns, thead_macro, trow_macro = get_table_data(env, object, path, root, columns)
@@ -114,9 +114,9 @@ def setup_filters(app, game_modules):
             
             return Markup(f"""
                 <a class='card' style='display:inline-block; text-align: center;' href="{ url_for(root+'.object',
-                  path=pathjoin(list(object._field_name) + [object._result])) }">""") \
+                  path=pathjoin(list(object._field_name) + [object._key])) }">""") \
                     + inline_block_filter(env, object._object) + Markup("</a>")
-        elif isinstance(object, dmtypes.Container):
+        elif isinstance(object, dmtypes.Struct):
             out = []
             if hasattr(object, "pic"):
                 out.append(Markup("<span>") + inline_block_filter(env, object.pic._object) + Markup("</span>"))
@@ -141,14 +141,14 @@ def setup_filters(app, game_modules):
             
             return Markup(f""" 
                 <a href="{ url_for(root+'.object',
-                  path=pathjoin(list(object._field_name) + [object._result])) }">""") \
+                  path=pathjoin(list(object._field_name) + [object._key])) }">""") \
                     + inline_filter(env, object._object) + Markup("</a>")
         elif isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
             if hasattr(object, "_filename"):
                 return Markup(f"""<img src="{ url_for(root+'.static', filename=object._filename) }">""")
             else:
                 return(str(object))
-        elif isinstance(object, dmtypes.Container):
+        elif isinstance(object, dmtypes.Struct):
             out = []
             if hasattr(object, "icon"):
                 out.append(Markup("<span class='icon'>") + inline_filter(env, object.icon._object) + Markup("</span>"))

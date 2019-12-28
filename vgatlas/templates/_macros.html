@@ -11,7 +11,7 @@
             background-color: {{object.hex}};"></div>
     {% elif isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset) and hasattr(object, '_filename'): %}
         <img src="{{ url_for(root+'.static', filename=object._filename) }}">
-    {% elif isinstance(object, dmgfx.Tile) %}
+    {% elif isinstance(object, dmgfx.Tile) and hasattr(object, '_filename') %}
         <img src="{{ url_for(root+'.static', filename=object._filename) }}">
     {% elif isinstance(object, dmtypes.String) %}
         {% for token in object -%}
@@ -46,7 +46,7 @@
                                     {{ key }}
                                 </span>
                             {% endif %}
-                            {% if isinstance(value, dmtypes.Container) or isinstance(value, dmtypes.Array) and not isinstance(value, dmtypes.String) %}
+                            {% if isinstance(value, dmtypes.Struct) or isinstance(value, dmtypes.Array) and not isinstance(value, dmtypes.String) %}
                                 <br><small class="text-muted">&lt;{{ type(value).__name__ }}&gt;</small>
                             {% endif %}
                         </dt>
@@ -68,12 +68,12 @@
         </div>
         {% endif %}
     {% elif isinstance(object, type([])) %}
-        {% if getattr(object._type, "_char", False) %} {# XXX #}
+        {% if getattr(object._parsetype, "_char", False) %} {# XXX #}
             {{ str(object) }}
         {% else %}
             {% if object | makes_a_good_table(path=path, root=root) %}
                 {{ object | table(path=path, root=root) }}
-            {% elif issubclass(object._type, dmgfx.Image) or issubclass(object._type, dmgfx.Tileset) %}
+            {% elif issubclass(object._parsetype, dmgfx.Image) or issubclass(object._parsetype, dmgfx.Tileset) %}
                 {% for i, value in enumerate(object) %}
                     <a {% if path != None %}href="{{ url_for(root+'.object',
                       path=pathjoin(path + [i])) }}"{% endif %}>
@@ -93,10 +93,13 @@
                                   class="position-absolute" style="left: 0px; top: -12px;">
                                     <span class="badge  badge-pill">{{i}}</span>
                                 </a>
-                                {% if value != None and object._type != type(value) %}
+                                {% if value != None and object._parsetype != type(value) and not isinstance(value, dmtypes.ForeignKey) %}
                                     <strong>{{ type(value).__name__ }}</strong>
                                 {% endif %}
                                 {{ value | block(path=path + [i] if path != None else None,  in_list=True, depth=depth+1, max_depth=max_depth, root=root) }}
+                                {% if isinstance(value, dmtypes.ForeignKey) %}
+                                    <small class="text-muted">&lt;{{ type(value).__name__ }}&gt;</small>
+                                {% endif %}
                             </li>
                         {% endfor %}
                         {% if show == 5 and len(object) > 5 %}
@@ -119,7 +122,7 @@
             {% endif %}
         {% endif %}
     {% elif isinstance(object, dmtypes.ForeignKey) %}
-        {% set fpath = list(object._field_name) + [object._result] %}
+        {% set fpath = list(object._field_name) + [object._key] %}
             {% if depth <= max_depth and not hasattr(object._object, "name") %}
                 {{ object._object | block(path=fpath, depth=depth+1, max_depth=max_depth, root=root) }}
             {% else %}
