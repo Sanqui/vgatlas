@@ -49,7 +49,7 @@ def setup_filters(app, game_modules):
             depth=depth, max_depth=max_depth, first=first, last=last, root=root)
 
     def get_table_data(env, object, path, root, columns):
-        typename = object._parsetype.__name__
+        typename = object._child_type.__name__
         
         template_path = root + "/" + typename + ".html"
         try:
@@ -69,7 +69,7 @@ def setup_filters(app, game_modules):
         # No columns were given to us, make a guess on what's appropriate.
         if not columns:
             columns = []
-            for name, type_ in object._parsetype._contents.items():
+            for name, type_ in object._child_type._contents.items():
                 if not issubclass(type_, dmtypes.Struct) and not issubclass(type_, dmtypes.Array)\
                   and name and not name.startswith("_"):
                     columns.append(name)
@@ -79,7 +79,7 @@ def setup_filters(app, game_modules):
     @app.template_filter('makes_a_good_table')
     @contextfilter
     def makes_a_good_table(env, object, path=[], root=None, columns=[]):
-        if not issubclass(object._parsetype, dmtypes.Struct):
+        if not issubclass(object._child_type, dmtypes.Struct):
             return False
         else:
             columns, thead_macro, trow_macro = get_table_data(env, object, path, root, columns)

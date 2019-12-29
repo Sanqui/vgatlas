@@ -8,8 +8,19 @@
     </h2>
         
         {{ object | block(path) }}
-    <p>Raw data:
+        
+    <h3>Type heritage:</h3>
+    <p>
+        <strong>Type name:</strong> {{ type(object).__name__ }}<br>
+        <strong>Type repr:</strong> {{ type(object) }}<br>
+        <strong>Bases:</strong> {{ type(object).__bases__ }}
+    
+    <h3>repr:</h3>
     <pre>
 {{ repr(object) }}
+    </pre>
+    <h3>_pretty_repr:</h3>
+    <pre>
+{{ object._pretty_repr() }}
     </pre>
 {% endblock %}

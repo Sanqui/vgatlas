@@ -68,12 +68,12 @@
         </div>
         {% endif %}
     {% elif isinstance(object, type([])) %}
-        {% if getattr(object._parsetype, "_char", False) %} {# XXX #}
+        {% if getattr(object._child_type, "_char", False) %} {# XXX #}
             {{ str(object) }}
         {% else %}
             {% if object | makes_a_good_table(path=path, root=root) %}
                 {{ object | table(path=path, root=root) }}
-            {% elif issubclass(object._parsetype, dmgfx.Image) or issubclass(object._parsetype, dmgfx.Tileset) %}
+            {% elif issubclass(object._child_type, dmgfx.Image) or issubclass(object._child_type, dmgfx.Tileset) %}
                 {% for i, value in enumerate(object) %}
                     <a {% if path != None %}href="{{ url_for(root+'.object',
                       path=pathjoin(path + [i])) }}"{% endif %}>
@@ -93,7 +93,7 @@
                                   class="position-absolute" style="left: 0px; top: -12px;">
                                     <span class="badge  badge-pill">{{i}}</span>
                                 </a>
-                                {% if value != None and object._parsetype != type(value) and not isinstance(value, dmtypes.ForeignKey) %}
+                                {% if value != None and object._child_type != type(value) and not isinstance(value, dmtypes.ForeignKey) %}
                                     <strong>{{ type(value).__name__ }}</strong>
                                 {% endif %}
                                 {{ value | block(path=path + [i] if path != None else None,  in_list=True, depth=depth+1, max_depth=max_depth, root=root) }}

@@ -5,3 +5,5 @@ from game_utils import setup
 
 blueprint, pokered = setup("pokered", "pokered.gbc")
 
+table_formats = {
+}

@@ -1,0 +1,16 @@
+{% macro thead(object, path, root) %}
+    <th>#</th>
+    <th>Lv.</th>
+    <th>Pokémon</th>
+{% endmacro %}
+
+{% macro trow(i, object, url, path, root) %}
+    <td class="p-0" style="width: 52px;">{{ i+1 }}</td>
+    <td> {{ object.level }} </td>
+    <td> {{ object.pokemon | inline }} </td>
+{% endmacro %}
+
+{% macro block(object, path, in_list,
+               depth, max_depth, first, last, id, root) %}
+    lv. {{ object.level }} {{ object.pokemon | inline }}
+{% endmacro %}

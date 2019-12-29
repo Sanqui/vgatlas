@@ -128,7 +128,7 @@ types [NUM_TYPES] :Type {
         0x00    => Terminator
         level   => :PartyPokemon {
             level   level
-            pokemon (U8 - 1) -> Pokemon
+            pokemon (U8 - 1) -> pokemon
         }
     }
     level => {
@@ -146,8 +146,8 @@ trainer_classes  @sym.TrainerDataPointers [NUM_TRAINERS] :TrainerClass {
     _nextptr        @Pos GBPtr
     _last           I + 1 == NUM_TRAINERS
     trainers        @_ptr _last match {
-        1 => [1] TrainerParty
-        0 => [] (Pos == _nextptr) match {
+        1 => :Trainers [1] TrainerParty
+        0 => :Trainers [] (Pos == _nextptr) match {
             1 => Terminator
             0 => TrainerParty
         }
