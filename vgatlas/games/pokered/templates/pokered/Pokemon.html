@@ -1,0 +1,24 @@
+{#
+{% macro thead(object, path, root) %}
+{% endmacro %}
+
+{% macro trow(i, object, url, path, root) %}
+
+{% endmacro %}
+
+#}
+
+{% macro block(object, path) %}
+    {% set pokemon = object %}
+    <div class="row">
+        <div class="col-8">
+            <dl class="row">
+                <dt class="col-3">Internal ID</dt>
+                    <dd class="col-9">{{ pokemon.id }}</dd>
+                <dt class="col-3">Pokédex no.</dt>
+                    <dd class="col-9">{{ pokemon.num }}</dd>
+            </dl>
+        </div>
+    </div>
+    <font color=red>TODO Pokemon block</font>
+{% endmacro %}

@@ -1,0 +1,4 @@
+{% macro block(object, path) %}
+    <h3>Trainers</h3>
+    {{ object.trainers | block(path=path+["trainers"], show_types=False) }}
+{% endmacro %}

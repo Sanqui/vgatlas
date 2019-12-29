@@ -1,27 +1,33 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, g, abort
 
+from filters import block_macro_for
+
 def get_object_template(obj, root, path):
     path = path.rstrip("/").split('/')
     objpath = [obj]
-    template_path = []
     for segment in path:
         if isinstance(objpath[-1], dict) and segment in objpath[-1]:
             objpath.append(objpath[-1][segment])
-            template_path.append(segment)
         elif isinstance(objpath[-1], list) and segment.isdigit() and int(segment) < len(objpath[-1]):
             objpath.append(objpath[-1][int(segment)])
-            template_path.append("_")
         else:
             abort(404)
         
     object=objpath[-1]
+    
+    views = ['auto', 'raw']
+    has_page_view = block_macro_for(root, object)
+    if has_page_view:
+        views.insert(0, 'page')
+    
+    view = request.args.get('view')
+    if not view:
+        view = views[0]
+    
     attrs = {}
     for attrname in 'id number name'.split():
         if hasattr(object, attrname):
             attrs[attrname] = getattr(object, attrname)
-    
-    #template_path = root + "/" + ".".join(template_path) + ".html"
-    #template_path = root + "/" + type(object).__name__ + ".html"
     
     index = None
     prev = None
@@ -35,6 +41,7 @@ def get_object_template(obj, root, path):
         root=root,
         path=path, object=object, objpath=objpath,
         index=index, prev=prev, next=next,
+        view=view, views=views,
         **attrs)
 
 def object_endpoint(obj, root):

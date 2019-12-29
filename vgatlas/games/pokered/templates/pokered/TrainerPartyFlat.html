@@ -1,0 +1,6 @@
+{% macro block(object, path) %}
+    <div>
+        <strong>Flat level: </strong> {{ object.level }}
+        {{ object.party | block(path=path+["party"], show_types=False) }}
+    </div>
+{% endmacro %}

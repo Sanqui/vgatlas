@@ -1,26 +1,41 @@
 {% extends base_template %}
 
 {% block content %}
+    
+    {{ prevnext() }}
+    
     <h2>
         {% if index %}#{{index}}{% endif %}
         {{ object | inline }}
         <small class="text-muted">&lt;{{ type(object).__name__ }}&gt;</small>
     </h2>
-        
-        {{ object | block(path) }}
-        
-    <h3>Type heritage:</h3>
-    <p>
-        <strong>Type name:</strong> {{ type(object).__name__ }}<br>
-        <strong>Type repr:</strong> {{ type(object) }}<br>
-        <strong>Bases:</strong> {{ type(object).__bases__ }}
     
-    <h3>repr:</h3>
-    <pre>
+    <ul class="nav nav-tabs justify-content-end">
+        {% for v in views %}
+            <li class="nav-item">
+                <a class="nav-link {% if v == view %}active{% endif %}" href="?view={{v}}">
+                    {{ v.capitalize() }} view
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    {% if view != 'raw' %}
+        {{ object | block(path, view=view) }}
+    {% else %}        
+        <h3>Type heritage:</h3>
+        <p>
+            <strong>Type name:</strong> {{ type(object).__name__ }}<br>
+            <strong>Type repr:</strong> {{ type(object) }}<br>
+            <strong>Bases:</strong> {{ type(object).__bases__ }}
+        
+        <h3>repr:</h3>
+        <pre>
 {{ repr(object) }}
-    </pre>
-    <h3>_pretty_repr:</h3>
-    <pre>
+        </pre>
+        <h3>_pretty_repr:</h3>
+        <pre>
 {{ object._pretty_repr() }}
-    </pre>
+        </pre>
+    {% endif %}
 {% endblock %}

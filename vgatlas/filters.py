@@ -18,35 +18,42 @@ def pathjoin(path):
         pathlist.append(part)
     return '/'.join(str(x) for x in pathlist)
 
+def lenient_macro_call(macro, **kwargs):
+    ''' Calls macro function, ignoring arguments which the function doesn't take. '''
+    new_kwargs = {}
+    for item in macro.arguments:
+        if item not in kwargs:
+            raise NameError(f"Macro {macro} (for {type(kwargs['object']).__name__}) takes unknown argument {item}")
+        new_kwargs[item] = kwargs[item]
+    
+    return macro(**new_kwargs)
+
+def block_macro_for(root, object):
+    typename = type(object).__name__
+    template_path = root + "/" + typename + ".html"
+    try:
+        return get_template_attribute(template_path, 'block')
+    except jinja2.exceptions.TemplateNotFound:
+        return None
+
 def setup_filters(app, game_modules):
     @app.template_filter('block')
     @contextfilter
-    def block_filter(env, object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None):
+    def block_filter(env, object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None, show_types=True, view='page'):
         if path == None: path = []
         if root == None: root = env.get('root', request.blueprint)
         
-        typename = type(object).__name__
-        template_path = root + "/" + typename + ".html"
-        try:
-            out = get_template_attribute(template_path, 'block')(object=object, path=path, in_list=in_list,
-                depth=depth, max_depth=max_depth, first=first, last=last, root=root)
-            return out
-        except (jinja2.exceptions.TemplateNotFound, ):
-            pass
-        
-        #if isinstance(object, datamijn.ListArray) and not isinstance(object, datamijn.Image):
-        #    return table_filter(env, object=object, path=path, root=root)
-        
-        try:
-            out = get_template_attribute(f"{root}/_macros.html", "block")(object=object, path=path, in_list=in_list,
-                depth=depth, max_depth=max_depth, first=first, last=last, root=root)
-            if out.strip():
-                return out
-        except jinja2.exceptions.TemplateNotFound:
-            pass
+        arguments = dict(
+            object=object, path=path, depth=depth, max_depth=max_depth, first=first,
+            in_list=in_list, last=last, root=root, show_types=show_types
+        )
+        if view == 'page':
+            macro = block_macro_for(root, object)
+            if macro:
+                return lenient_macro_call(macro, **arguments)
         
         return get_template_attribute("_macros.html", "block")(object=object, path=path, in_list=in_list,
-            depth=depth, max_depth=max_depth, first=first, last=last, root=root)
+            depth=depth, max_depth=max_depth, first=first, last=last, root=root, show_types=show_types)
 
     def get_table_data(env, object, path, root, columns):
         typename = object._child_type.__name__

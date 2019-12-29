@@ -124,14 +124,14 @@ types [NUM_TYPES] :Type {
 }
 
 :TrainerParty U8 match {
-    0xff => [] U8 match {
+    0xff => :TrainerPartyFull [] U8 match {
         0x00    => Terminator
         level   => :PartyPokemon {
             level   level
             pokemon (U8 - 1) -> pokemon
         }
     }
-    level => {
+    level => :TrainerPartyFlat {
         level   level
         party   [] U8 match {
             0x00    => Terminator
