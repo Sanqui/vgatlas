@@ -1,4 +1,4 @@
-{% macro block(object, path=None, in_list=False, depth=0, max_depth=5,  first=False, last=False, root=None, show_types=True) %}
+{% macro block(object, path=None, in_list=False, depth=0, max_depth=5,  first=False, last=False, root=None, show_types=True, show_i=True) %}
     {% if isinstance(object, dmgfx.Palette) %}
         <div class="d-flex flex-row" style="display: inline-block;">
             {% for i, color in enumerate(object) %}
@@ -74,7 +74,7 @@
             {{ str(object) }}
         {% else %}
             {% if object | makes_a_good_table(path=path, root=root) %}
-                {{ object | table(path=path, root=root) }}
+                {{ object | table(path=path, root=root, show_i=show_i) }}
             {% elif issubclass(object._child_type, dmgfx.Image) or issubclass(object._child_type, dmgfx.Tileset) %}
                 {% for i, value in enumerate(object) %}
                     <a {% if path != None %}href="{{ url_for(root+'.object',
@@ -90,11 +90,13 @@
                         {% set show = 5 if (depth and len(object) > 5) else len(object) %}
                         {% for i, value in enumerate(object[:show]) %}
                             <li class="list-group-item">
-                                <a {% if path != None %}href="{{ url_for(root+'.object',
-                                  path=pathjoin(path + [i])) }}"{% endif %}
-                                  class="position-absolute" style="left: 0px; top: -12px;">
-                                    <span class="badge  badge-pill">{{i}}</span>
-                                </a>
+                                {% if path %}
+                                    <a {% if path != None %}href="{{ url_for(root+'.object',
+                                      path=pathjoin(path + [i])) }}"{% endif %}
+                                      class="position-absolute" style="left: 0px; top: -12px;">
+                                        <span class="badge  badge-pill">{{i}}</span>
+                                    </a>
+                                {% endif %}
                                 {% if value != None and object._child_type.__name__ != type(value).__name__ and not isinstance(value, dmtypes.ForeignKey) and show_types %}
                                     <strong>{{ type(value).__name__ }}</strong>
                                 {% endif %}
@@ -137,14 +139,16 @@
     {% endif %}
 {% endmacro %}
 
-{% macro table(object, columns, path, root, thead_macro=None, trow_macro=None) %}
+{% macro table(object, columns, path, root, thead_macro=None, trow_macro=None, show_i=True) %}
     <table class="table table-striped">
         <thead>
             {% if thead_macro %}
                 {{ thead_macro(object, path, root) }}
             {% else %}
                 <tr>
-                    <th scope="col">#</th>
+                    {% if show_i %}
+                        <th scope="col">#</th>
+                    {% endif %}
                     {% for name in columns %}
                         <th scope="col">
                             {{ name }}
@@ -163,23 +167,25 @@
                     {% if thead_macro %}
                         {{ trow_macro(i, row, url, path, root) }}
                     {% else %}
+                        {% if show_i %}
                             <th scope="row">
                                 <a {% if path != None %}href="{{ url_for(root+'.object',
                                           path=pathjoin(path + [i])) }}">{% endif %}
                                     {{ i }}
                                 </a>
                             </th>
-                            {% for name in columns %}
-                                <td>
-                                    {% if isinstance(columns, dict) %}
-                                        {% if columns[name] == "block" %}
-                                            {{ getattr(row, name) | block }}
-                                        {% endif %}
-                                    {% else %}
-                                        {{ getattr(row, name) | inline }}
+                        {% endif %}
+                        {% for name in columns %}
+                            <td>
+                                {% if isinstance(columns, dict) %}
+                                    {% if columns[name] == "block" %}
+                                        {{ getattr(row, name) | block }}
                                     {% endif %}
-                                </td>
-                            {% endfor %}
+                                {% else %}
+                                    {{ getattr(row, name) | inline }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
                     {% endif %}
                 </tr>
             {% endfor %}

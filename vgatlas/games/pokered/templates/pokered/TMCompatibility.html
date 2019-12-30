@@ -1,0 +1,29 @@
+{% macro tmthtd(object, tm, hm=False) %}
+    {% if tm < 50 %}
+        <th>TM {{ "{:02}".format(tm+1) }}</dh>
+        <td>{{ object[tm] | inline }}</td>
+    {% endif %}
+{% endmacro %}
+
+{% macro block(object, path) %}
+    <table class="table mb-0">
+        <tbody>
+            {% for tm in range(54//4) %}
+                <tr>
+                    {{ tmthtd(object, tm*4) }}
+                    {{ tmthtd(object, tm*4+1) }}
+                    {{ tmthtd(object, tm*4+2) }}
+                    {{ tmthtd(object, tm*4+3) }}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="table">
+        <tbody>
+            {% for hm in range(5) %}
+                <th>HM{{ hm+1 }}</dh>
+                <td>{{ object[50+hm] | inline }}</td>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}

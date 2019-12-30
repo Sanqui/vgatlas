@@ -10,15 +10,69 @@
 
 {% macro block(object, path) %}
     {% set pokemon = object %}
-    <div class="row">
+    {% set base_stats = pokemon.base_stats %}
+    {% set evos_moves = pokemon.evos_moves %}
+    <div class="row mb-4">
         <div class="col-8">
-            <dl class="row">
-                <dt class="col-3">Internal ID</dt>
-                    <dd class="col-9">{{ pokemon.id }}</dd>
-                <dt class="col-3">Pokédex no.</dt>
-                    <dd class="col-9">{{ pokemon.num }}</dd>
-            </dl>
+            <div class="card">
+                <h5 class="card-header">Basic data</h5>
+                <dl class="row card-body">
+                    <dt class="col-4">Internal ID</dt>
+                        <dd class="col-2">{{ pokemon.id }}</dd>
+                    <dt class="col-4">Pokédex no.</dt>
+                        <dd class="col-2">{{ pokemon.num }}</dd>
+                    <dt class="col-4">Type</dt>
+                        <dd class="col-8">
+                            {{ base_stats.type1 | inline }}
+                            {% if base_stats.type1 != base_stats.type2 %}
+                                / {{ base_stats.type2 | inline }}
+                            {% endif %}
+                        </dd>
+                    <dt class="col-4">Catch rate</dt>
+                        <dd class="col-8">{{ base_stats.catch_rate }}</dd>
+                    <dt class="col-4">EXP yield</dt>
+                        <dd class="col-8">{{ base_stats.exp_yield }}</dd>
+                    <dt class="col-4">Growth rate</dt>
+                        <dd class="col-8">{{ base_stats.growth_rate | inline }}</dd>
+                    <dt class="col-4">Starting moves</dt>
+                        <dd class="col-8">{{ base_stats.starting_moves | block(show_types=False) }}</dd>
+                </dl>
+            </div>
+        </div>
+        
+        <div class="col-4">
+            <div class="card">
+                <h5 class="card-header">Base stats</h5>
+                <dl class="row card-body">
+                    {% for stat, value in base_stats.stats.items() %}
+                        <dt class="col-4">{{ stat.capitalize() }}</dt>
+                            <dd class="col-8">{{ value }}</dd>
+                    {% endfor %}
+                </dl>
+            </div>
         </div>
     </div>
-    <font color=red>TODO Pokemon block</font>
+    <div class="row">
+        <div class="col-4">
+            <div class="card mb-4">
+                <h5 class="card-header">Learnset</h5>
+                <div class="card-body">
+                    {{ evos_moves.learnset | block(show_i=False) }}
+                </div>
+            </div>
+            <div class="card">
+                <h5 class="card-header">TM compatibility</h5>
+                <div class="card-body">
+                    {{ base_stats.tms | block }}
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="card">
+                <h5 class="card-header">Evolutions</h5>
+                {{ evos_moves.evolutions | block }}
+            </div>
+        </div>
+    </div>
+    <font color=red>Incomplete</font>
 {% endmacro %}

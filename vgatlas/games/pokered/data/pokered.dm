@@ -54,7 +54,7 @@ _pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
     
     growth_rate     U8 -> growth_rates
     
-    tms             [64]B1
+    tms             :TMCompatibility [64]B1
 }
 
 // see https://github.com/pret/pokered/blob/6ba3765c5932996f5da6417ae703794ff10bb1cb/engine/experience.asm#L149

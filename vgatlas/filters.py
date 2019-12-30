@@ -39,21 +39,20 @@ def block_macro_for(root, object):
 def setup_filters(app, game_modules):
     @app.template_filter('block')
     @contextfilter
-    def block_filter(env, object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None, show_types=True, view='page'):
+    def block_filter(env, object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None, show_types=True, show_i=True, view='page'):
         if path == None: path = []
         if root == None: root = env.get('root', request.blueprint)
         
         arguments = dict(
             object=object, path=path, depth=depth, max_depth=max_depth, first=first,
-            in_list=in_list, last=last, root=root, show_types=show_types
+            in_list=in_list, last=last, root=root, show_types=show_types, show_i=show_i
         )
         if view == 'page':
             macro = block_macro_for(root, object)
             if macro:
                 return lenient_macro_call(macro, **arguments)
         
-        return get_template_attribute("_macros.html", "block")(object=object, path=path, in_list=in_list,
-            depth=depth, max_depth=max_depth, first=first, last=last, root=root, show_types=show_types)
+        return get_template_attribute("_macros.html", "block")(**arguments)
 
     def get_table_data(env, object, path, root, columns):
         typename = object._child_type.__name__
@@ -98,7 +97,7 @@ def setup_filters(app, game_modules):
 
     @app.template_filter('table')
     @contextfilter
-    def table_filter(env, object, path=[], root=None, columns=[]):
+    def table_filter(env, object, path=[], root=None, columns=[], show_i=True):
         if not isinstance(object, dmtypes.Array):
             raise TypeError("Can't make table out of {type(object).__name__}, only Array.")
         #if not isinstance(object._type, datamijn.Container):
@@ -107,7 +106,7 @@ def setup_filters(app, game_modules):
         columns, thead_macro, trow_macro = get_table_data(env, object, path, root, columns)
         
         if root == None: root = env.get('root', request.blueprint)
-        return get_template_attribute("_macros.html", "table")(object=object, path=path, root=root, columns=columns, thead_macro=thead_macro, trow_macro=trow_macro)
+        return get_template_attribute("_macros.html", "table")(object=object, path=path, root=root, columns=columns, thead_macro=thead_macro, trow_macro=trow_macro, show_i=show_i)
 
     # TODO maybe this should really just be __str__ and __html__ of objects, in datamijn
 

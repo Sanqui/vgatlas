@@ -22,13 +22,40 @@
     
     {% if view != 'raw' %}
         {{ object | block(path, view=view) }}
-    {% else %}        
-        <h3>Type heritage:</h3>
-        <p>
-            <strong>Type name:</strong> {{ type(object).__name__ }}<br>
-            <strong>Type repr:</strong> {{ type(object) }}<br>
-            <strong>Bases:</strong> {{ type(object).__bases__ }}
-        
+    {% else %}
+    
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <h5 class="card-header">Object information</h5>
+                    <dl class="row card-body">
+                        <dt class="col-3">Path</dt>
+                            <dd class="col-9">{{ object._path }}</dd>
+                        <dt class="col-3">Type</dt>
+                            <dd class="col-9">{{ type(object).__name__ }}</dd>
+                        <dt class="col-3">Address</dt>
+                            <dd class="col-9">{{ getattr(object, '_address', '-') }}</dd>
+                        <dt class="col-3">Size</dt>
+                            <dd class="col-9">{{ getattr(object, '_size', '-') }}</dd>
+                        <dt class="col-3">Pointer</dt>
+                            <dd class="col-9">{{ getattr(object, '_pointer', '-') }}</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <h5 class="card-header">Type information</h5>
+                    <dl class="row card-body">
+                        <dt class="col-3">Name</dt>
+                            <dd class="col-9">{{ type(object).__name__ }}</dd>
+                        <dt class="col-3">Repr</dt>
+                            <dd class="col-9">{{ repr(type(object)) }}</dd>
+                        <dt class="col-3">Bases</dt>
+                            <dd class="col-9">{{ type(object).__bases__ }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
         <h3>repr:</h3>
         <pre>
 {{ repr(object) }}
