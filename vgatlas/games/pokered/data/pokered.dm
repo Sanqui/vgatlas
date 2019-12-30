@@ -93,10 +93,26 @@ _pokemon_evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :PokemonEvos
     }
 }
 
+defaultpal GBPalDefault
+
+pokemon_icon_data @sym.MonPartySpritePointers [28] {
+    pointer     U16
+    size        U8
+    bank        U8
+    destination U16
+    
+    image    @(pointer % 0x4000 + bank * 0x4000) [size] GBTile
+    !save image
+}
+//!save pokemon_icon_data
+
+_pokemon_icons @sym.MonPartyData [NUM_POKEDEX + 1] B4
+
 pokemon @sym.PokedexOrder [NUM_POKEMON] :Pokemon {
     id              I
     num             U8
     name            id -> text.pokemon
+    icon            num -> _pokemon_icons
     base_stats      (num - 1) -> _pokemon_base_stats
     evos_moves      id        -> _pokemon_evos_moves
 }
