@@ -5,7 +5,15 @@
     {% endif %}
 {% endmacro %}
 
-{% macro block(object, path) %}
+{% macro tmtdmove(rootobj, tm, max=50) %}
+    {% if tm < max %}
+        <td style="border-top: 0;" colspan=2>
+            <small>{{ rootobj.tms[tm] | inline }}</small>
+        </td>
+    {% endif %}
+{% endmacro %}?
+
+{% macro block(object, path, rootobj) %}
     <table class="table mb-0">
         <tbody>
             {% for tm in range(54//4) %}
@@ -15,15 +23,28 @@
                     {{ tmthtd(object, tm*4+2) }}
                     {{ tmthtd(object, tm*4+3) }}
                 </tr>
+                <tr>
+                    {{ tmtdmove(rootobj, tm*4) }}
+                    {{ tmtdmove(rootobj, tm*4+1) }}
+                    {{ tmtdmove(rootobj, tm*4+2) }}
+                    {{ tmtdmove(rootobj, tm*4+3) }}
+                </tr>
             {% endfor %}
         </tbody>
     </table>
     <table class="table">
         <tbody>
-            {% for hm in range(5) %}
-                <th>HM{{ hm+1 }}</dh>
-                <td>{{ object[50+hm] | inline }}</td>
-            {% endfor %}
+            <tr>
+                {% for hm in range(5) %}
+                    <th>HM{{ hm+1 }}</dh>
+                    <td>{{ object[50+hm] | inline }}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for hm in range(5) %}
+                    {{ tmtdmove(rootobj, 50+hm, max=56) }}
+                {% endfor %}
+            </tr>
         </tbody>
     </table>
 {% endmacro %}

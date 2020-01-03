@@ -2,9 +2,9 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for,
 
 from filters import block_macro_for
 
-def get_object_template(obj, root, path):
+def get_object_template(rootobj, root, path):
     path = path.rstrip("/").split('/')
-    objpath = [obj]
+    objpath = [rootobj]
     for segment in path:
         if isinstance(objpath[-1], dict) and segment in objpath[-1]:
             objpath.append(objpath[-1][segment])
@@ -37,8 +37,10 @@ def get_object_template(obj, root, path):
         prev = objpath[-2][index-1] if index != 0 else None
         next = objpath[-2][index+1] if index + 1 < len(objpath[-2]) else None
     
+    g.rootobj = rootobj
+    
     return ['object.html'], dict(base_template=root+'/_base.html',
-        root=root,
+        root=root, rootobj=rootobj,
         path=path, object=object, objpath=objpath,
         index=index, prev=prev, next=next,
         view=view, views=views,

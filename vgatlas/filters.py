@@ -39,13 +39,15 @@ def block_macro_for(root, object):
 def setup_filters(app, game_modules):
     @app.template_filter('block')
     @contextfilter
-    def block_filter(env, object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None, show_types=True, show_i=True, view='page'):
+    def block_filter(env, object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None, show_types=True, show_i=True, rootobj=None, view='page'):
         if path == None: path = []
         if root == None: root = env.get('root', request.blueprint)
+        if rootobj == None: rootobj = g.rootobj
         
         arguments = dict(
             object=object, path=path, depth=depth, max_depth=max_depth, first=first,
-            in_list=in_list, last=last, root=root, show_types=show_types, show_i=show_i
+            in_list=in_list, last=last, root=root, show_types=show_types, show_i=show_i,
+            rootobj=rootobj,
         )
         if view == 'page':
             macro = block_macro_for(root, object)

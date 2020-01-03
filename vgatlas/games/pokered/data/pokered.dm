@@ -8,14 +8,20 @@
 :NUM_ITEMS        97
 :NUM_TYPES        27
 :NUM_TRAINERS     47
+:NUM_TMS          55
 
 :MaybeU8 U8 match {
     0 => Null
     i => i - 1
 }
 
-:GBPtr       (Pos / 0x4000 * 0x4000) + (U16 % 0x4000)
+:GBPtr       GBAddr(Pos / 0x4000, U16)
+//:GBPtr       (Pos / 0x4000 * 0x4000) + (U16 % 0x4000)
 :PtrString   @GBPtr String
+
+//test  GBAddr(0, 0)
+
+//test2 Test
 
 text {
     pokemon     @sym.MonsterNames   [NUM_POKEMON] [10]Char
@@ -57,6 +63,12 @@ _pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
     tms             :TMCompatibility [64]B1
 }
 
+pokemon_cries @sym.CryData [NUM_POKEMON] :Cry {
+    base_cry    U8
+    pitch       U8
+    length      U8
+}
+
 // see https://github.com/pret/pokered/blob/6ba3765c5932996f5da6417ae703794ff10bb1cb/engine/experience.asm#L149
 growth_rates @sym.GrowthRateTable [6] :GrowthRate {
     a B4
@@ -96,15 +108,23 @@ _pokemon_evos_moves @sym.EvosMovesPointerTable [NUM_POKEMON] @GBPtr :PokemonEvos
 defaultpal GBPalDefault
 
 pokemon_icon_data @sym.MonPartySpritePointers [28] {
-    pointer     U16
-    size        U8
-    bank        U8
-    destination U16
+    _ptr         U16
+    size_        U8
+    _bank        U8
+    destination  U16
     
-    image    @(pointer % 0x4000 + bank * 0x4000) [size] GBTile
-    !save image
+    image    @GBAddr(_bank, _ptr) size_ match {
+        8 => ([4][2] GBTile) | defaultpal
+        4 => ([2][2] GBTile) | defaultpal
+        2 => ([2][1] GBTile) | defaultpal
+        1 => {
+            _tile [1] GBTile 
+            = ([1](_tile + _tile)) | defaultpal
+        }
+        x => [x] GBTile
+    }
 }
-//!save pokemon_icon_data
+!save pokemon_icon_data
 
 _pokemon_icons @sym.MonPartyData [NUM_POKEDEX + 1] B4
 
@@ -112,6 +132,7 @@ pokemon @sym.PokedexOrder [NUM_POKEMON] :Pokemon {
     id              I
     num             U8
     name            id -> text.pokemon
+    cry             id -> pokemon_cries
     icon            num -> _pokemon_icons
     base_stats      (num - 1) -> _pokemon_base_stats
     evos_moves      id        -> _pokemon_evos_moves
@@ -196,3 +217,5 @@ items [NUM_ITEMS] :Item {
     key_item        id -> _key_items
     price           id -> _item_prices
 }
+
+tms @sym.TechnicalMachines [NUM_TMS] (U8 - 1) -> moves

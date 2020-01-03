@@ -52,6 +52,10 @@
             </div>
         </div>
     </div>
+    <div class="card mb-4">
+        <h5 class="card-header">Evolutions</h5>
+        {{ evos_moves.evolutions | block }}
+    </div>
     <div class="row">
         <div class="col-4">
             <div class="card mb-4">
@@ -60,17 +64,13 @@
                     {{ evos_moves.learnset | block(show_i=False) }}
                 </div>
             </div>
+        </div>
+        <div class="col-8">
             <div class="card">
                 <h5 class="card-header">TM compatibility</h5>
                 <div class="card-body">
                     {{ base_stats.tms | block }}
                 </div>
-            </div>
-        </div>
-        <div class="col-8">
-            <div class="card">
-                <h5 class="card-header">Evolutions</h5>
-                {{ evos_moves.evolutions | block }}
             </div>
         </div>
     </div>
