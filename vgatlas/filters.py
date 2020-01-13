@@ -42,7 +42,7 @@ def setup_filters(app, game_modules):
     def block_filter(env, object, path=None, in_list=False, depth=0, max_depth=5, first=False, last=False, root=None, show_types=True, show_i=True, rootobj=None, view='page'):
         if path == None: path = []
         if root == None: root = env.get('root', request.blueprint)
-        if rootobj == None: rootobj = g.rootobj
+        if rootobj == None: rootobj = getattr(g, 'rootobj', None)
         
         arguments = dict(
             object=object, path=path, depth=depth, max_depth=max_depth, first=first,
