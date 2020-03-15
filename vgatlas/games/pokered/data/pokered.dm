@@ -9,6 +9,7 @@
 :NUM_TYPES        27
 :NUM_TRAINERS     47
 :NUM_TMS          55
+:NUM_MAPS         248
 
 :MaybeU8 U8 match {
     0 => Null
@@ -35,6 +36,8 @@ text {
 gfx {
     font @sym.FontGraphics [256]Tile1BPP
 }
+
+!save gfx
 
 _pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
     num             U8
@@ -219,3 +222,20 @@ items [NUM_ITEMS] :Item {
 }
 
 tms @sym.TechnicalMachines [NUM_TMS] (U8 - 1) -> moves
+
+maps {
+    map_header_banks        @sym.MapHeaderBanks     [NUM_MAPS]U8
+    map_header_pointers     @sym.MapHeaderPointers  [NUM_MAPS]U16
+
+    maps    [NUM_MAPS] @GBAddr(map_header_banks[I], map_header_pointers[I]) {
+        tileset     U8
+        y           U8
+        x           U8
+        blocks      @U16    [y][x]U8
+        
+        ptr_text    U16
+        ptr_script  U16
+        connections U8
+        ptr_objects U16
+    }
+}

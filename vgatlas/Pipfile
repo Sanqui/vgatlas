@@ -5,9 +5,10 @@ name = "pypi"
 
 [packages]
 flask = "*"
-datamijn = {git="/home/sanqui/romhacking/datamijn/datamijn", "ref"="0.4.10"}
+datamijn = {git = "/home/sanqui/romhacking/datamijn/datamijn",ref = "0.4.13"}
 
 [dev-packages]
+pylint = "*"
 
 [requires]
 python_version = "3.7"
