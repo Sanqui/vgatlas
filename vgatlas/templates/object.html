@@ -33,9 +33,9 @@
                         <dt class="col-3">Type</dt>
                             <dd class="col-9">{{ type(object).__name__ }}</dd>
                         <dt class="col-3">Address</dt>
-                            <dd class="col-9">{{ getattr(object, '_address', '-') }}</dd>
+                            <dd class="col-9">{{ "0x{:0x}".format(object._address) if hasattr(object, '_address') else '-' }}</dd>
                         <dt class="col-3">Size</dt>
-                            <dd class="col-9">{{ getattr(object, '_size', '-') }}</dd>
+                            <dd class="col-9">{{ "0x{:0x}".format(object._size) if hasattr(object, '_size') else '-' }}</dd>
                         <dt class="col-3">Pointer</dt>
                             <dd class="col-9">{{ getattr(object, '_pointer', '-') }}</dd>
                     </dl>

@@ -8,10 +8,10 @@
 {% macro tmtdmove(rootobj, tm, max=50) %}
     {% if tm < max %}
         <td style="border-top: 0;" colspan=2>
-            <small>{{ rootobj.tms[tm] | inline }}</small>
+            <small>{{ rootobj.tms[tm].move | inline }}</small>
         </td>
     {% endif %}
-{% endmacro %}?
+{% endmacro %}
 
 {% macro block(object, path, rootobj) %}
     <table class="table mb-0">

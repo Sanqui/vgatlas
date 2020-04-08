@@ -67,6 +67,7 @@ _pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
 }
 
 pokemon_cries @sym.CryData [NUM_POKEMON] :Cry {
+    num I
     base_cry    U8
     pitch       U8
     length      U8
@@ -74,6 +75,7 @@ pokemon_cries @sym.CryData [NUM_POKEMON] :Cry {
 
 // see https://github.com/pret/pokered/blob/6ba3765c5932996f5da6417ae703794ff10bb1cb/engine/experience.asm#L149
 growth_rates @sym.GrowthRateTable [6] :GrowthRate {
+    num I
     a B4
     b B4
     s B1
@@ -136,7 +138,7 @@ pokemon @sym.PokedexOrder [NUM_POKEMON] :Pokemon {
     num             U8
     name            id -> text.pokemon
     cry             id -> pokemon_cries
-    icon            num -> _pokemon_icons
+    icon_           num -> _pokemon_icons
     base_stats      (num - 1) -> _pokemon_base_stats
     evos_moves      id        -> _pokemon_evos_moves
 }
@@ -221,7 +223,10 @@ items [NUM_ITEMS] :Item {
     price           id -> _item_prices
 }
 
-tms @sym.TechnicalMachines [NUM_TMS] (U8 - 1) -> moves
+tms @sym.TechnicalMachines [NUM_TMS] :TM {
+    num     I + 1
+    move    (U8 - 1) -> moves
+}
 
 maps {
     map_header_banks        @sym.MapHeaderBanks     [NUM_MAPS]U8

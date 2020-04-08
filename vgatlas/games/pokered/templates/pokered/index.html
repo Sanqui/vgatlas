@@ -2,10 +2,44 @@
 
 {% set root = "pokered" %}
 
+{% macro item(title, name=None, description=None) %}
+    {% set name = name or title.lower().replace(' ', '_') %}
+    {% set obj_url = url_for(root+'.object', path=name)  %}
+    {% set obj = g.pokered[name] %}
+    <a class="list-group-item" href="{{ obj_url }}">
+        <h4 class="list-group-item-heading">{{ title }}</h4>
+        {% if description %}
+            {{ description }}
+        {% endif %}
+        {% if isinstance(obj, list) %}
+            {% for item in obj[0:3] %}
+                {{ item | inline | striptags }}{% if not loop.last %},{% endif %}
+            {% endfor -%}
+            ... <strong>{{ obj | count }}</strong> total
+        {% endif %}
+    </a>
+{% endmacro %}
+
 {% block content %}
     <h2>Pokémon Red</h2>
     Top-level menu
-    <ul>
+    <h3>Game objects</h3>
+    <div class="list-group">
+        {{ item('Pokémon', 'pokemon') }}
+        {{ item('Moves') }}
+        {{ item('Items') }}
+        {{ item('TMs') }}
+        {{ item('Types') }}
+        {{ item('Trainer classes') }}
+    </div>
+    <h3>Miscellania</h3>
+        {{ item('Growth rates') }}
+        {{ item('Text') }}
+    
+    <details>
+        <summary>
+            <h3>Default listing</h3>
+        </summary>
         {{ g.pokered | block(path=[], max_depth=0, root=root) }}
-    </ul>
+    </details>
 {% endblock %}

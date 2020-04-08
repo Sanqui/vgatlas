@@ -1,0 +1,8 @@
+{% macro inline(object) %}
+    {% if object.num <= 50 %}
+        TM {{ "{:02}".format(object.num) }}
+    {% else %}
+        HM {{ "{:02}".format(object.num-50) }}
+    {% endif %}
+    {{ object.move | inline }}
+{% endmacro %}

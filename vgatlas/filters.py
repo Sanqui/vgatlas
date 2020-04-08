@@ -28,13 +28,18 @@ def lenient_macro_call(macro, **kwargs):
     
     return macro(**new_kwargs)
 
-def block_macro_for(root, object):
+def get_macro_for(root, object, macro):
     typename = type(object).__name__
     template_path = root + "/" + typename + ".html"
     try:
-        return get_template_attribute(template_path, 'block')
+        return get_template_attribute(template_path, macro)
+    except AttributeError:
+        return None
     except jinja2.exceptions.TemplateNotFound:
         return None
+
+def block_macro_for(root, object):
+    return get_macro_for(root, object, 'block') or get_macro_for(root, object, 'inline')
 
 def setup_filters(app, game_modules):
     @app.template_filter('block')
@@ -143,13 +148,18 @@ def setup_filters(app, game_modules):
     @contextfilter
     def inline_filter(env, object):
         root = env.get('root', request.blueprint)
+
+        macro = get_macro_for(root, object, 'inline')
+        if macro:
+            return lenient_macro_call(macro, object=object)
+        
         if isinstance(object, dmtypes.ForeignKey):
             if isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
                 return inline_filter(env, object._object)
             
             return Markup(f""" 
                 <a href="{ url_for(root+'.object',
-                  path=pathjoin(list(object._field_name) + [object._key])) }">""") \
+                  path=pathjoin(list(object._field_name) + [object._key])) }">⮞""") \
                     + inline_filter(env, object._object) + Markup("</a>")
         elif isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
             if hasattr(object, "_filename"):

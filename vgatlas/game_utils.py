@@ -21,7 +21,7 @@ def setup(name, rom_filename):
 
     @blueprint.route(f'/{name}/')
     def index():
-        return render_template([f'{name}/index.html', 'root.html'], root=name, path=[], prev=None, next=None)
+        return render_template([f'{name}/index.html', 'root.html'], root=name, path=[], objpath=[], prev=None, next=None)
 
     object = blueprint.route(f'/{name}/<path:path>')(object_endpoint(data, name))
     
