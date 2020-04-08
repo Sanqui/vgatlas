@@ -1,12 +1,17 @@
-{#
 {% macro thead(object, path, root) %}
+    <th>#</th>
+    <th>Dex no.</th>
+    <th>Name</th>
+    <th>Type</th>
 {% endmacro %}
 
 {% macro trow(i, object, url, path, root) %}
-
+    <td><a href="{{ url }}">{{i}}</a></td>
+    <td>{{ object.num }}</td>
+    <td>{{ object.name }}</td>
+    <td>{{ object.base_stats['type'] | inline }}</td>
 {% endmacro %}
 
-#}
 
 {% macro block(object, path) %}
     {% set pokemon = object %}
@@ -23,10 +28,7 @@
                         <dd class="col-2">{{ pokemon.num }}</dd>
                     <dt class="col-4">Type</dt>
                         <dd class="col-8">
-                            {{ base_stats.type1 | inline }}
-                            {% if base_stats.type1 != base_stats.type2 %}
-                                / {{ base_stats.type2 | inline }}
-                            {% endif %}
+                            {{ object.base_stats['type'] | inline }}
                         </dd>
                     <dt class="col-4">Catch rate</dt>
                         <dd class="col-8">{{ base_stats.catch_rate }}</dd>
@@ -54,7 +56,13 @@
     </div>
     <div class="card mb-4">
         <h5 class="card-header">Evolutions</h5>
-        {{ evos_moves.evolutions | block }}
+        {% if evos_moves.evolutions %}
+            {{ evos_moves.evolutions | block }}
+        {% else %}
+            <div class="card-body">
+                <p>No evolutions.
+            </div>
+        {% endif %}
     </div>
     <div class="row">
         <div class="col-4">

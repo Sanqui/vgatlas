@@ -48,8 +48,7 @@ _pokemon_base_stats @sym.BaseStats [NUM_POKEDEX] :PokemonBaseStats {
         speed       U8
         special     U8
     }
-    type1           U8  -> types
-    type2           U8  -> types
+    type            :PokemonType ([2]U8  -> types)
     catch_rate      U8
     exp_yield       U8
     

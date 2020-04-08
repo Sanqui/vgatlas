@@ -1,0 +1,7 @@
+{% macro inline(object) %}
+    {% if object[0] == object[1] %}
+        {{ object[0] | inline }}
+    {% else %}
+        {{ object[0] | inline }} / {{ object[1] | inline }}
+    {% endif %}
+{% endmacro %}

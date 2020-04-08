@@ -159,7 +159,7 @@ def setup_filters(app, game_modules):
             
             return Markup(f""" 
                 <a href="{ url_for(root+'.object',
-                  path=pathjoin(list(object._field_name) + [object._key])) }">⮞""") \
+                  path=pathjoin(list(object._field_name) + [object._key])) }" class="foreign">""") \
                     + inline_filter(env, object._object) + Markup("</a>")
         elif isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
             if hasattr(object, "_filename"):
