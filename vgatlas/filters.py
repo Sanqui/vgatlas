@@ -172,10 +172,13 @@ def setup_filters(app, game_modules):
                 out.append(Markup("<span class='icon'>") + inline_filter(env, object.icon._object) + Markup("</span>"))
             if hasattr(object, "name"):
                 out.append(str(object.name))
-            elif hasattr(object, "number"):
-                out.append(f"{type(object).__name__} #{number}")
             else:
-                out.append(f"<{type(object).__name__}>")
+                for attr in "number num no id".split():
+                    if hasattr(object, attr):
+                        out.append(f"{type(object).__name__} #{getattr(object, attr)}")
+                        break
+                if not out:
+                    out.append(f"<{type(object).__name__}>")
             
             return Markup(" ").join(out)
         elif isinstance(object, dmtypes.String):

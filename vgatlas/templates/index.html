@@ -2,12 +2,16 @@
 
 {% block content %}
     <h1>What is VGAtlas?</h1>
-    <p><i>TODO a catchy blurp.</i>  VGAtlas is curated, comprehensive, & reproducible on every game, it contains data, images, text dumps, (maybe) screenshots.  Ever needed to look something up or cite it?  No longer you're using google images or listening to potato let's players, just look it up on vgatlas
+    <p>VGAtlas is curated, comprehensive, and reproducible video game data bank.  Ever needed to check some values, find some image, or cite some text?  No longer you're using google images or listening to potato let's players, just look it up on vgatlas.
+    <p><strong>VGAtlas is in very early stages.</strong>
     <h2>Games</h2>
-    <p><i>TODO games should be in rectangle boxes wide as the screen, with the game logo and BG.</i>
-    <ul>
-        <li><a href="/ff1">Final Fantasy 1</a>
-        <li><a href="{# url_for('telefang.index') #}/telefang">Keitai Denjuu Telefang</a>
-        <li><a href="/pokered">Pokémon Red</a>
+    <!--<p><i>TODO games should be in rectangle boxes wide as the screen, with the game logo and BG.</i>-->
+    <div class="list-group">
+        {% for game_module in g.game_modules %}
+            {% set name = game_module.__name__.split('.')[-1] %}
+            <a class="list-group-item" href="{{ name }}">
+                <h4 class="list-group-item-heading">{{ name }}</h4>
+            </a>
+        {% endfor %}
     </ul>
 {% endblock %}

@@ -1,5 +1,6 @@
 from pprint import pformat
 
+import subprocess
 from flask import Flask, render_template, Markup, url_for, get_template_attribute, request, g
 from jinja2 import StrictUndefined, contextfilter
 import jinja2.exceptions
@@ -43,6 +44,20 @@ for module in game_modules:
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.before_request
+def before_request():
+    # Ugly but will get the job done for time being.
+    if 'git_tag' not in g:
+        g.git_tag = subprocess.run(['git', 'describe', '--tags'], capture_output=True).stdout.decode('utf-8')
+    if 'datamijn_tag' not in g:
+        pipfile = open('Pipfile')
+        for line in pipfile:
+            if line.startswith('datamijn'):
+                g.datamijn_tag = line.split(',')[-1].split('"')[1]
+    
+    if 'game_modules' not in g:
+        g.game_modules = game_modules
 
 if __name__=="__main__":
     app.run(debug=True, threaded=True)
