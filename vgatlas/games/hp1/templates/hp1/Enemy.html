@@ -1,8 +1,24 @@
+{% set abbrs = {
+    'pri': 'Priority/slowness.  Lower value = moves earlier in the turn',
+    'flip': 'Defense against Flipendo and Wingadium Leviosa',
+    'vermi': 'Defense against Vermillious',
+    'verdi': 'Defense against Verdimillious',
+    'ince': 'Defense against Incendio'
+} %}
+
 {% macro thead(object, path, root) %}
     <th>#</th>
     <th>pic</th>
     {% for param in object[0] %}
-        <th>{{ param }}</th>
+        <th>
+            {% if param in abbrs %}
+                <abbr title="{{abbrs[param]}}">
+                    {{ param }}
+                </abbr>
+            {% else %}
+                {{ param }}
+            {% endif %}
+        </th>
     {% endfor %}
 {% endmacro %}
 

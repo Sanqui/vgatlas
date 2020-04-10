@@ -140,7 +140,7 @@
 {% endmacro %}
 
 {% macro table(object, columns, path, root, thead_macro=None, trow_macro=None, show_i=True) %}
-    <table class="table table-striped">
+    <table class="table table-striped sortable">
         <thead>
             {% if thead_macro %}
                 {{ thead_macro(object, path, root) }}
