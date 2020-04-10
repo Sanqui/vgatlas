@@ -1,4 +1,5 @@
 from pprint import pformat
+from sys import argv
 
 import subprocess
 from flask import Flask, render_template, Markup, url_for, get_template_attribute, request, g
@@ -11,9 +12,10 @@ import datamijn.gfx as dmgfx
 
 from filters import setup_filters, pathjoin
 
-GAMES = "pokered hp1".split()
-#GAMES = "pokered".split()
-#GAMES = "xm".split()
+if len(argv) > 1:
+    GAMES = argv[1].split()
+else:
+    GAMES = "pokered hp1".split()
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
