@@ -1,0 +1,30 @@
+{% macro thead(object, path, root) %}
+    <th>#</th>
+    <th>pic</th>
+    {% for param in object[0] %}
+        <th>{{ param }}</th>
+    {% endfor %}
+{% endmacro %}
+
+{% macro trow(i, object, url, path, root) %}
+    <td><a href="{{ url }}">{{i}}</a></td>
+    <td style='
+        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num }}.png");
+        height: 24px;
+        background-position: -33px -48px;'>
+    </td>
+    {% for value in object.values() %}
+        <td>{{ value | inline }}</td>
+    {% endfor %}
+{% endmacro %}
+
+{% macro block(object, path) %}
+    Rudimentary sprite rip:<br>
+    <div style='
+        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num }}.png");
+        height: 100px;
+        width: 100px;
+        background-position: -33px 0px;'>
+    </div>
+    {{ object | block(view='auto') }}
+{% endmacro %}

@@ -11,7 +11,8 @@ import datamijn.gfx as dmgfx
 
 from filters import setup_filters, pathjoin
 
-GAMES = "pokered".split()
+GAMES = "pokered hp1".split()
+#GAMES = "pokered".split()
 #GAMES = "xm".split()
 
 app = Flask(__name__)
