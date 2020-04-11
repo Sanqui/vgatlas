@@ -18,7 +18,7 @@
 
 :GBPtr       GBAddr(Pos / 0x4000, U16)
 //:GBPtr       (Pos / 0x4000 * 0x4000) + (U16 % 0x4000)
-:PtrString   @GBPtr String
+:PtrString   @GBPtr PokemonString
 
 //test  GBAddr(0, 0)
 
@@ -26,10 +26,10 @@
 
 text {
     pokemon     @sym.MonsterNames   [NUM_POKEMON] [10]Char
-    moves       @sym.MoveNames      [NUM_MOVES]   String
-    items       @sym.ItemNames      [NUM_ITEMS]   String
-    trainers    @sym.TrainerNames   [NUM_TRAINERS]String
-    maps        @sym.PalletTownName [53]          String
+    moves       @sym.MoveNames      [NUM_MOVES]   PokemonString
+    items       @sym.ItemNames      [NUM_ITEMS]   PokemonString
+    trainers    @sym.TrainerNames   [NUM_TRAINERS]PokemonString
+    maps        @sym.PalletTownName [53]          PokemonString
     types       @sym.TypeNames      [NUM_TYPES]   PtrString
 }
 

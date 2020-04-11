@@ -1,0 +1,23 @@
+{% from '_macros.html' import item with context %}
+{% extends 'hp2/_base.html' %}
+
+{% set root = "hp2" %}
+
+{% block content %}
+    <h2>Harry Potter 2</h2>
+    Top-level menu
+    <h3>Game objects</h3>
+    <div class="list-group">
+        {{ item('Enemies') }}
+        {{ item('Folio Bruti Enemies') }}
+        {{ item('Enemy rosters') }}
+        {{ item('Text') }}
+    </div>
+
+    <details>
+        <summary>
+            Default listing
+        </summary>
+        {{ g.hp2 | block(path=[], max_depth=0, root=root) }}
+    </details>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% macro thead(object, path, root) %}
+    <th>#</th>
+    <th>Map</th>
+    <th colspan=4>Rosters</th>
+{% endmacro %}
+
+{% macro trow(i, object, url, path, root) %}
+        <td rowspan=1><a href="{{ url }}">{{i}}</a></td>
+        <td rowspan=1>{{ object.map | inline}}</td>
+        {% for i, roster in enumerate(object.rosters) %}
+            <td>#{{i}}</td>
+            <td>
+                {% for enemy in roster %}
+                    {{ enemy | inline }}<br>
+                {% endfor %}
+            </td>
+        {% endfor %}
+{% endmacro %}
+
+{% macro block(object, path) %}
+    Map: {{ object.map | inline}}
+    {{ object.rosters | block }}
+{% endmacro %}

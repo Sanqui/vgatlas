@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a22b0cb3ed78deea4a005ba3bae1da243f96ed2d730c0e2fec79b70eee3a7504"
+            "sha256": "e3aca7ff8abc667da5c3915f6fa2efa0d054f1554ebcc00085dd463f4daf6a0f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -25,7 +25,7 @@
         },
         "datamijn": {
             "git": "file:///home/sanqui/romhacking/datamijn/datamijn",
-            "ref": "9ede8518a749df2284a7bb891d4190d26c07e9f8"
+            "ref": "9eddd916ad7f8685ee2fe422cf0de7a4f06f1993"
         },
         "flask": {
             "hashes": [
@@ -86,6 +86,19 @@
                 "sha256:e8313f01ba26fbbe36c7be1966a7b7424942f670f38e666995b88d012765b9be"
             ],
             "version": "==1.1.1"
+        },
+        "pathtools": {
+            "hashes": [
+                "sha256:7c35c5421a39bb82e58018febd90e3b6e5db34c5443aaaf742b3f33d4655f1c0"
+            ],
+            "version": "==0.1.2"
+        },
+        "watchdog": {
+            "hashes": [
+                "sha256:c560efb643faed5ef28784b2245cf8874f939569717a4a12826a173ac644456b"
+            ],
+            "index": "pypi",
+            "version": "==0.10.2"
         },
         "werkzeug": {
             "hashes": [

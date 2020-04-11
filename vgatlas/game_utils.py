@@ -5,11 +5,14 @@ from object_endpoint import object_endpoint
 
 ROOT = "pokered"
 
-def setup(name, rom_filename):
+def setup(name, rom_filename, post_setup=None):
     print(f"Initializing {name}...")
     dm = open(f"games/{name}/data/{name}.dm")
     rom = open(f"games/{name}/data/{rom_filename}", "rb")
     data = datamijn.parse(dm, rom, f"games/{name}/static/")
+
+    if post_setup:
+        post_setup(data)
 
     blueprint = Blueprint(name, __name__,
         static_folder=f'games/{name}/static/', static_url_path=f"/{name}/static",

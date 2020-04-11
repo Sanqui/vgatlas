@@ -1,0 +1,37 @@
+{% set abbrs = {
+    'pri': 'Priority/slowness.  Lower value = moves earlier in the turn',
+    'flip': 'Defense against Flipendo and Wingadium Leviosa',
+    'vermi': 'Defense against Vermillious',
+    'verdi': 'Defense against Verdimillious',
+    'ince': 'Defense against Incendio'
+} %}
+
+{% macro thead(object, path, root) %}
+    <th>#</th>
+    <th>Name</th>
+    {% for param in list(object[0].keys())[:-1] %}
+        <th>
+            {% if param in abbrs %}
+                <abbr title="{{abbrs[param]}}">
+                    {{ param }}
+                </abbr>
+            {% else %}
+                {{ param }}
+            {% endif %}
+        </th>
+    {% endfor %}
+{% endmacro %}
+
+{% macro trow(i, object, url, path, root) %}
+    <td><a href="{{ url }}">{{i}}</a></td>
+    <td>{{ object.name | inline }}</td>
+    {% for value in list(object.values())[:-1] %}
+        <td>{{ value | inline }}</td>
+    {% endfor %}
+{% endmacro %}
+
+{#
+{% macro block(object, path) %}
+    {{ object | block(view='auto') }}
+{% endmacro %}
+#}

@@ -118,4 +118,4 @@
     x => :Unknown x
 }
 
-:String []Char
+:PokemonString []Char
