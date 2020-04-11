@@ -62,7 +62,8 @@ def setup_filters(app, game_modules):
         return get_template_attribute("_macros.html", "block")(**arguments)
 
     def get_table_data(env, object, path, root, columns):
-        typename = object._child_type.__name__
+        typename = object._child_type.__name__.split()[-1]
+        # The split fixes e.g. "@GBAddr() MapRosters"
         
         template_path = root + "/" + typename + ".html"
         try:
@@ -157,10 +158,17 @@ def setup_filters(app, game_modules):
             if isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
                 return inline_filter(env, object._object)
             
-            return Markup(f""" 
+            try:
+                object_text = inline_filter(env, object._object)
+            except datamijn.utils.ForeignKeyError:
+                object_text = Markup(f"<span class='text-danger'>??? #{object._key}")
+
+            out = Markup(f""" 
                 <a href="{ url_for(root+'.object',
                   path=pathjoin(list(object._field_name) + [object._key])) }" class="foreign">""") \
-                    + inline_filter(env, object._object) + Markup("</a>")
+                    + object_text + Markup("</a>")
+            
+            return out
         elif isinstance(object, dmgfx.Image) or isinstance(object, dmgfx.Tileset):
             if hasattr(object, "_filename"):
                 return Markup(f"""<img src="{ url_for(root+'.static', filename=object._filename) }">""")

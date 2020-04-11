@@ -15,7 +15,7 @@ from filters import setup_filters, pathjoin
 if len(argv) > 1:
     GAMES = argv[1].split()
 else:
-    GAMES = "pokered hp1".split()
+    GAMES = "pokered hp1 hp2".split()
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
@@ -63,4 +63,4 @@ def before_request():
         g.game_modules = game_modules
 
 if __name__=="__main__":
-    app.run(debug=True, threaded=True)
+    app.run(debug=True, threaded=True, use_reloader=False)
