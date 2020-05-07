@@ -6,6 +6,16 @@
     'ince': 'Defense against Incendio'
 } %}
 
+{% macro inline(object) %}
+    <div style='
+        display: inline-block;
+        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num+1 }}.png");
+        height: 24px;
+        width: 32px;
+        background-position: -33px -48px;'>
+    </div>
+{% endmacro %}
+
 {% macro thead(object, path, root) %}
     <th>#</th>
     <th>pic</th>
@@ -35,12 +45,18 @@
 {% endmacro %}
 
 {% macro block(object, path) %}
-    Rudimentary sprite rip:<br>
-    <div style='
-        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num+1 }}.png");
-        height: 100px;
-        width: 100px;
-        background-position: -33px 0px;'>
+    <div class="row">
+        <div class="col-2">
+            Rudimentary sprite rip:<br>
+            <div style='
+                background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num+1 }}.png");
+                height: 100px;
+                width: 100px;
+                background-position: -33px 0px;'>
+            </div>
+        </div>
+        <div class="col-10">
+            {{ object | block(view='auto') }}
+        </div>
     </div>
-    {{ object | block(view='auto') }}
 {% endmacro %}

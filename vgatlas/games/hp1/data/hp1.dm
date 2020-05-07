@@ -3,6 +3,8 @@
 :NUM_ENEMIES 61
 :NUM_STRINGS 3000
 :NUM_ITEMS 113
+:NUM_MAPS 2214 - 2116
+:NUM_BOSSES 14
 
 enemies @sym.EnemyStats [NUM_ENEMIES] :Enemy {
     num         U8
@@ -33,6 +35,26 @@ items [NUM_ITEMS] :Item {
     id          I
     name        (1401 + id) -> text
 }
+
+maps    [NUM_MAPS] :Map {
+    id          I
+    name        (2116 + id) -> text
+    message     (2215 + id) -> text
+}
+
+:EnemyRoster [3] U8 match {
+    0        => Null
+    enemy_id => (enemy_id - 2) -> enemies
+}
+
+enemy_rosters  @sym.EncounterGroupTablePointers [NUM_MAPS] @GBAddr(0x03, U16) :MapRosters {
+    i         I
+    map       i -> maps
+    rosters [3] @GBAddr(0x03, U16) EnemyRoster
+}
+
+boss_rosters @sym.BossGroupsPointers [NUM_BOSSES] @GBAddr(0x03, U16) EnemyRoster
+
 
 text_key @0x823e6 [U8*2] {
     next    B7

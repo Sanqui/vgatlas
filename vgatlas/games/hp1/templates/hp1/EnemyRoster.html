@@ -1,0 +1,9 @@
+
+{% macro block(object, path) %}
+    <ul class="list-group">
+        {% for enemy in object %}
+            <li class="list-group-item">
+                {{ enemy | inline }}
+        {% endfor %}
+    </ul>
+{% endmacro %}
