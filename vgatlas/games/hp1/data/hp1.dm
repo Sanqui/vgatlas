@@ -2,8 +2,9 @@
 
 :NUM_ENEMIES 61
 :NUM_STRINGS 3000
+:NUM_ITEMS 113
 
-enemies @sym.EnemyStats [61] :Enemy {
+enemies @sym.EnemyStats [NUM_ENEMIES] :Enemy {
     num         U8
     hp          U16
     mp          U16
@@ -20,7 +21,17 @@ enemies @sym.EnemyStats [61] :Enemy {
     exp         U16
     sickles     U16
     unk16       U8
-    unk17       U8
+    item_drop   U8 match {
+        254     => :Drop254
+        253     => :Drop253
+        252     => :Drop252
+        item_id => item_id -> items
+    } 
+}
+
+items [NUM_ITEMS] :Item {
+    id          I
+    name        (1401 + id) -> text
 }
 
 text_key @0x823e6 [U8*2] {
