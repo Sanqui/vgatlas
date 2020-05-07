@@ -17,10 +17,8 @@ enemies @sym.EnemyStats [61] :Enemy {
     ince        U8
     psn1        U8
     psn2        U8
-    unk12       U8
-    unk13       U8
-    unk14       U8
-    unk15       U8
+    exp         U16
+    sickles     U16
     unk16       U8
     unk17       U8
 }

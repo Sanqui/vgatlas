@@ -25,7 +25,7 @@
 {% macro trow(i, object, url, path, root) %}
     <td><a href="{{ url }}">{{i}}</a></td>
     <td style='
-        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num }}.png");
+        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num+1 }}.png");
         height: 24px;
         background-position: -33px -48px;'>
     </td>
@@ -37,7 +37,7 @@
 {% macro block(object, path) %}
     Rudimentary sprite rip:<br>
     <div style='
-        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num }}.png");
+        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num+1 }}.png");
         height: 100px;
         width: 100px;
         background-position: -33px 0px;'>
