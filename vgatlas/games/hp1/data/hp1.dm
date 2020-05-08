@@ -128,6 +128,8 @@ spells @sym.SpellDamageTable [NUM_SPELLS] {
     aoe             _spell_data.aoe[id]
 }
 
+rng_table @sym.RNGTable [256]U8
+
 text_key @0x823e6 [U8*2] {
     next    B7
     end     B1
