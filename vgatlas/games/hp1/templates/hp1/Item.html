@@ -1,0 +1,27 @@
+{% macro thead(object, path, root) %}
+    <th rowspan=2>#</th>
+    <th rowspan=2>name</th>
+    <th colspan=6>Effect</th>
+</tr>
+<tr>
+    <th>SP</th>
+    <th>Priority</th>
+    <th>Strength</th>
+    <th>Defense</th>
+    <th>Magic Str</th>
+    <th>Magic Def</th>
+{% endmacro %}
+
+{% macro trow(i, object, url, path, root) %}
+    <td><a href="{{url}}">#{{i}}</a></td>
+    <td>{{object.name}}</td>
+    {% if object.effect %}
+        <td colspan=6>
+            {{ object.effect | inline }}
+        </td>
+    {% else %}
+        {% for stat in "sp priority strength defense magic_str magic_def".split() %}
+            <td>{{ object.stat_boost[stat] }}</td>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}

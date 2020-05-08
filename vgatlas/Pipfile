@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 flask = "*"
-datamijn = {git = "/home/sanqui/romhacking/datamijn/datamijn",ref = "0.4.17"}
+datamijn = {git = "/home/sanqui/romhacking/datamijn/datamijn",ref = "0.4.21"}
 watchdog = "*"
 
 [dev-packages]

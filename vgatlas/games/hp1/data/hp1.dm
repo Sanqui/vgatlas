@@ -31,6 +31,15 @@ enemies @sym.EnemyStats [NUM_ENEMIES] :Enemy {
     } 
 }
 
+_equipment_stat_boosts @sym.EquipmentStatBoostTable [0x23] :EquipmentStatBoosts {
+    sp          U8
+    strength    U8
+    defense     U8
+    magic_str   U8
+    magic_def   U8
+    priority    S8
+}
+
 _item_effects @sym.ItemEffectTable [NUM_ITEMS - 0x23] :ItemEffect {
     effect U8 match {
         :CantUseNow
@@ -46,7 +55,7 @@ _item_effects @sym.ItemEffectTable [NUM_ITEMS - 0x23] :ItemEffect {
         :VitamixPotion
         :Disgusting
         :Antidote
-        x => x
+        x => :InvalidEffect x
     }
     argument   U8
 }
@@ -54,8 +63,12 @@ _item_effects @sym.ItemEffectTable [NUM_ITEMS - 0x23] :ItemEffect {
 items [NUM_ITEMS] :Item {
     id          I
     name        (1401 + id) -> text
+    stat_boost  id match {
+        x       => x -> _equipment_stat_boosts
+        0x23..0xff => Null
+    }
     effect      id match {
-        0..0x23 => :Unuseable
+        0..0x23 => Null
         x       => (x - 0x23) -> _item_effects
     }
 }
