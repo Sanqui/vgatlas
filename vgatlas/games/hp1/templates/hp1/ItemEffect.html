@@ -1,0 +1,3 @@
+{% macro inline(object) %}
+    {{ type(object.effect).__name__ }} {{ object.argument }}
+{% endmacro %}

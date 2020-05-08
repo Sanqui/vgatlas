@@ -31,9 +31,33 @@ enemies @sym.EnemyStats [NUM_ENEMIES] :Enemy {
     } 
 }
 
+_item_effects @sym.ItemEffectTable [NUM_ITEMS - 0x23] :ItemEffect {
+    effect U8 match {
+        :CantUseNow
+        :RecoverSP
+        :RecoverMP
+        :FlavorSP
+        :List
+        :Cauldron
+        :CurseBook
+        :CloakOfInvisibility
+        :ChocolateFrog
+        :IngredientEncyclopedia
+        :VitamixPotion
+        :Disgusting
+        :Antidote
+        x => x
+    }
+    argument   U8
+}
+
 items [NUM_ITEMS] :Item {
     id          I
     name        (1401 + id) -> text
+    effect      id match {
+        0..0x23 => :Unuseable
+        x       => (x - 0x23) -> _item_effects
+    }
 }
 
 maps    [NUM_MAPS] :Map {
