@@ -92,6 +92,27 @@ enemy_rosters  @sym.EncounterGroupTablePointers [NUM_MAPS] @GBAddr(0x03, U16) :M
 
 boss_rosters @sym.BossGroupsPointers [NUM_BOSSES] @GBAddr(0x03, U16) EnemyRoster
 
+_harry_stats {
+    _sp        @sym.LevelSPTable [100]U16
+    _mp        @sym.LevelMPTable [100]U16
+    _priority  @sym.LevelPriorityTable [100]U8
+    _strength  @sym.LevelStrengthTable [100]U8
+    _defense   @sym.LevelDefenseTable [100]U8
+    _magic_str @sym.LevelMagicStrTable [100]U8
+    _magic_def @sym.LevelMagicDefTable [100]U8
+
+}
+
+harry_stats   [100] {
+    level       I + 1
+    sp          _harry_stats._sp[level - 1]
+    mp          _harry_stats._mp[level - 1]
+    priority    _harry_stats._priority[level - 1]
+    strength    _harry_stats._strength[level - 1]
+    defense     _harry_stats._defense[level - 1]
+    magic_str   _harry_stats._magic_str[level - 1]
+    magic_def   _harry_stats._magic_def[level - 1]
+}
 
 text_key @0x823e6 [U8*2] {
     next    B7
