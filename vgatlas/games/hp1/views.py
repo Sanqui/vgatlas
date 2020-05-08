@@ -7,3 +7,7 @@ blueprint, pokered = setup("hp1", "hp1.gbc")
 
 table_formats = {
 }
+
+@blueprint.route(f'/hp1/notes/')
+def notes():
+    return render_template('hp1/notes.html', root='hp1', objpath=[], path=[])

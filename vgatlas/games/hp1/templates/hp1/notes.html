@@ -1,0 +1,26 @@
+{% extends "hp1/_base.html" %}
+
+{% block content %}
+    <h2>HP1 notes</h2>
+    <p><i>I suppose this is where I'll put assorted notes about this game now.</i>
+
+    <h3>Stat calculation</h3>
+    <p>Bug: When calculating stats, the game writes Magic Def for harry three times - for each magical spell (excluding Flipendo, which uses defense); and then only applies the boost from equipment to the first value (defense against vermi). Quirrel seems to use both Vermillious and Verdimillious, so it's sorta relevant.
+
+    <h3>Misses</h3>
+    <ul>
+        <li>The first five spells cast on new game cannot miss.
+        <li>The chance to hit is 94%.
+        <li>Enemies have either 7/10 or 4/10 chance to hit depending on some battle flag.
+        <li>Miss calculations use hardware RNG.
+    </ul>
+
+    <h3>Damage formula</h3>
+    <ul>
+        <li>Formula for physical damage (including Flipendo) is <code>Damage = SpellBase + Strength - EnemyDefense/2</code>.  SpellBase is 0 for enemies.
+        <li>Formula for magical damage is <code>MagicDamage = ((MagicStr-EnemyMagicDef)/2 * SpellBase / 32) + SpellBase</code>.  Each of the three magical spells have their own defenses.
+        <li>If crit, <code>Damage *= 2</code>.  Chance to crit is 1/10 (game RNG)
+        <li>Final damage formula is <code>FinalDamage = Damage + Rnd</code>, where Rnd is <code>Rnd = Random(0, Damage/16) - Damage/8</code>, or if <code>Damage/16 == 0</code>, <code>Rnd=Random(0, 2) - 1</code>.
+    </ul>
+
+{% endblock %}
