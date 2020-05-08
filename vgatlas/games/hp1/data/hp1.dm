@@ -5,6 +5,7 @@
 :NUM_ITEMS 113
 :NUM_MAPS 2214 - 2116
 :NUM_BOSSES 14
+:NUM_SPELLS 17
 
 enemies @sym.EnemyStats [NUM_ENEMIES] :Enemy {
     num         U8
@@ -112,6 +113,19 @@ harry_stats   [100] {
     defense     _harry_stats._defense[level - 1]
     magic_str   _harry_stats._magic_str[level - 1]
     magic_def   _harry_stats._magic_def[level - 1]
+}
+
+_spell_data {
+    aoe @sym.SpellAOETable [NUM_SPELLS]B1
+    mp_costs @sym.SpellMPCosts [NUM_SPELLS]U8
+}
+
+spells @sym.SpellDamageTable [NUM_SPELLS] {
+    id              I
+    name            (id + 9) -> text
+    mp_cost         _spell_data.mp_costs[id]
+    base_damage     U8
+    aoe             _spell_data.aoe[id]
 }
 
 text_key @0x823e6 [U8*2] {
