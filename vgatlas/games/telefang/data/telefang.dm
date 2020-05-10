@@ -125,7 +125,7 @@ denjuu @0x1d4b48 [NUM_DENJUU] :Denjuu {
     id          I
     num         id + 1
     name        text.denjuu[id]
-    pic         id -> gfx.denjuu
+    //pic         id -> gfx.denjuu
     base_stats  Stats
     moves       [4]MoveNo
     unk1        U8
@@ -170,7 +170,7 @@ types [NUM_TYPES] :Type {
 personalities [NUM_PERSONALITIES] :Personality {
     _id     I
     name    text.personalities[_id]
-    icon    _id   -> gfx.zodiac
+    //icon    _id   -> gfx.zodiac
 }
 
 moves @0x9cb29 [NUM_MOVES] :Move {
@@ -181,8 +181,8 @@ moves @0x9cb29 [NUM_MOVES] :Move {
 items [NUM_ITEMS] :Item {
     _id     I
     name    text.items[_id]
-    pic     _id   -> gfx.items.pics
-    icon    _id   -> gfx.items.icons
+    //pic     _id   -> gfx.items.pics
+    //icon    _id   -> gfx.items.icons
 }
 // TODO item prices
 

@@ -7,7 +7,7 @@
 {% endmacro %}
 
 {% macro trow(i, denjuu, url, path, root) %}
-    <td class="p-0" style="width: 52px;">{{ denjuu.pic | inline }}</td>
+    <td class="p-0" style="width: 52px;">{#{{ denjuu.pic | inline }}#}</td>
     <th scope="row" style="width: 52px;">
         <a {% if url %}href="{{ url }}"{% endif %}>
             {{ denjuu.num }}
@@ -22,8 +22,7 @@
     </td>
 {% endmacro %}
 
-{% macro block(object, path, in_list,
-            depth, max_depth, first, last, id, root) %}
+{% macro block(object, path) %}
     {% set denjuu = object %}
     <h2>Denjuu #{{ denjuu.num }} {{ denjuu | inline }}</h2>
     <div class="row">
@@ -69,7 +68,10 @@
         </div>
         <div class="col">
             <div class="pic">
-                {{ denjuu.pic | block }}
+                {#
+                    {{ denjuu.pic | block }}
+                #}
+                pic TODO (It worked before!)
             </div>
             <div class="card">
                 <table class="table">
