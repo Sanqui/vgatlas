@@ -6,8 +6,7 @@
 :NUM_MAPS 2214 - 2116
 :NUM_BOSSES 14
 :NUM_SPELLS 17
-
-enemies @sym.EnemyStats [NUM_ENEMIES] :Enemy {
+:Enemy {
     num         U8
     hp          U16
     mp          U16
@@ -31,6 +30,9 @@ enemies @sym.EnemyStats [NUM_ENEMIES] :Enemy {
         item_id => item_id -> items
     } 
 }
+
+enemies @sym.EnemyStats [NUM_ENEMIES] Enemy
+_all_enemies @sym.EnemyStats [255] Enemy
 
 _equipment_stat_boosts @sym.EquipmentStatBoostTable [0x23] :EquipmentStatBoosts {
     sp          U8

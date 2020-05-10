@@ -15,7 +15,7 @@ from filters import setup_filters, pathjoin
 if len(argv) == 2:
     GAMES = argv[1].split()
 else:
-    GAMES = "pokered hp1 hp2".split()
+    GAMES = "pokered telefang hp1 hp2".split()
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
