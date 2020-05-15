@@ -10,7 +10,7 @@ def post_setup(hp2):
     for bruti_enemy in hp2.folio_bruti_enemies:
         bruti_enemy.enemy._object['name'] = bruti_enemy.name
 
-blueprint, pokered = setup("hp2", "hp2.gbc", post_setup)
+blueprint, pokered = setup("hp2", "hp2.gbc", title="Harry Potter and the Chamber of Secrets (GBC)", post_setup=post_setup)
 
 table_formats = {
     'MapRosters': []

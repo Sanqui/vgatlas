@@ -61,6 +61,8 @@ def before_request():
     
     if 'game_modules' not in g:
         g.game_modules = game_modules
+    
+    g.title = "VGAtlas"
 
 if __name__=="__main__":
     app.run(debug=True, threaded=True, use_reloader=False)

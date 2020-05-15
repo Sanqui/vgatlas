@@ -5,7 +5,7 @@ from object_endpoint import object_endpoint
 
 ROOT = "pokered"
 
-def setup(name, rom_filename, post_setup=None):
+def setup(name, rom_filename, title=None, post_setup=None):
     print(f"Initializing {name}...")
     dm = open(f"games/{name}/data/{name}.dm")
     rom = open(f"games/{name}/data/{rom_filename}", "rb")
@@ -18,12 +18,16 @@ def setup(name, rom_filename, post_setup=None):
         static_folder=f'games/{name}/static/', static_url_path=f"/{name}/static",
         template_folder=f'games/{name}/templates/')
 
+    blueprint.gametitle = title or name
+
     @blueprint.before_request
     def before_request():
         setattr(g, name, data)
+        g.gametitle = title or name
 
     @blueprint.route(f'/{name}/')
     def index():
+        g.title = f"VGAtlas - {g.gametitle}"
         return render_template([f'{name}/index.html', 'root.html'], root=name, path=[], objpath=[], prev=None, next=None)
 
     object = blueprint.route(f'/{name}/<path:path>')(object_endpoint(data, name))

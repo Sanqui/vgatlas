@@ -50,6 +50,11 @@ def object_endpoint(obj, root):
     def object(path):
         template_name, attrs = get_object_template(obj, root, path)
         
+        if path:
+            g.title = f"VGAtlas - {g.gametitle} / {path}"
+        else:
+            g.title = f"VGAtlas - {g.gametitle}"
+        
         return render_template(template_name, **attrs)
     
     return object

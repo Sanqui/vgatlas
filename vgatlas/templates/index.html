@@ -10,7 +10,7 @@
         {% for game_module in g.game_modules %}
             {% set name = game_module.__name__.split('.')[-1] %}
             <a class="list-group-item" href="{{ name }}">
-                <h4 class="list-group-item-heading">{{ name }}</h4>
+                <h4 class="list-group-item-heading">{{ game_module.views.blueprint.gametitle }}</h4>
             </a>
         {% endfor %}
     </ul>

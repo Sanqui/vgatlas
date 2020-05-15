@@ -3,7 +3,7 @@ import datamijn
 
 from game_utils import setup
 
-blueprint, pokered = setup("hp1", "hp1.gbc")
+blueprint, hp1 = setup("hp1", "hp1.gbc", title="Harry Potter and the Philosopher's Stone (GBC)")
 
 table_formats = {
 }
