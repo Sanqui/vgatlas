@@ -45,18 +45,95 @@
 {% endmacro %}
 
 {% macro block(object, path) %}
-    <div class="row">
+    {% set enemy = object %}
+    <div class="row mb-4">
         <div class="col-2">
-            Rudimentary sprite rip:<br>
-            <div style='
-                background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num+1 }}.png");
-                height: 100px;
-                width: 100px;
-                background-position: -33px 0px;'>
+            <div class="card">
+                <h5 class="card-header">Image</h5>
+                <div class="row card-body text-center">
+                    <div style='
+                        background-image: url("https://sanqui.net/etc/hp1/enemies/enemy_{{ object.num+1 }}.png");
+                        height: 100px;
+                        width: 100px;
+                        background-position: -33px 0px;
+                        margin: auto;
+                        margin-bottom: 12px;'>
+                    </div>
+                    <div>
+                        <small class="text-muted">This sprite will hopefully be improved in the future.</small>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-10">
-            {{ object | block(view='auto') }}
+            <div class="card">
+                <h5 class="card-header">Basic data and stats</h5>
+                <dl class="row card-body">
+                    {% macro row(attr, text, info=None, value=None, barvalue=None, max=None) %}
+                        {% if value == None %} {% set value = enemy[attr] %} {% endif %}
+                        {% if barvalue == None %} {% set barvalue = value %} {% endif %}
+                        <dt class="col-4">
+                            {{ text }}
+                            {% if info != None %}
+                                <span class="text-info"
+                                    data-toggle="tooltip" data-placement="top" title="{{ info }}">🛈</span>
+                            {% endif %}
+                        </dt>
+                            {% if not max %}
+                                <dd class="col-8">{{ value | inline }}</dd>
+                            {% else %}
+                                <dd class="col-8 row">
+                                    <div class="col-4">{{ value }}</div>
+                                    <div class="col-8">
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: {{100*(barvalue/max)}}%"></div>
+                                        </div>
+                                    </div>
+                                </dd>
+                            {% endif %}
+                    {% endmacro %}
+                    {{ row("num", "Battler ID") }}
+                    {{ row("hp", "HP", max=800) }}
+                    {{ row("mp", "MP", max=1) }}
+                    {{ row("pri", "Priority", max=255) }}
+                    {{ row("pri", "Agility", value=150-enemy.pri, barvalue=255-enemy.pri, max=255,
+                        info="Agility is calculated from Priority using the formula 150-priority.") }}
+                    {{ row("flip", "Physical defense", max=255,
+                        info="Physical defense is used against the Flipendo and Wingadium Leviosa spells.") }}
+                    {{ row("vermi", "Vermillious defense", max=255) }}
+                    {{ row("verdi", "Verdimillious defense", max=255) }}
+                    {{ row("ince", "Incendio defense", max=255) }}
+                    {{ row("psn1", "Poison value 1",
+                        info="We don't know what these values mean exactly, but they seem to be only used by enemies which can poison you.") }}
+                    {{ row("psn2", "Poison value 2") }}
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <h5 class="card-header">Rewards</h5>
+                <dl class="row card-body">
+                    {{ row("exp", "Experience points") }}
+                    {{ row("sickles", "Sickles") }}
+                    {{ row("item_drop", "Item drop",
+                        info="The chance for an item drop is 1/4 for each enemy.") }}
+                </dl>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <h5 class="card-header">Unknown values</h5>
+                <div class="card-body">
+                    <dl class="row">
+                        {{ row("unk1", "Unknown value 1") }}
+                        {{ row("unk2", "Unknown value 2") }}
+                        {{ row("unk16", "Unknown value 16") }}
+                    </dl>
+                    <p class="text-muted">We don't know what these values are used for yet.  More research is needed!</p>
+                </div>
+            </div>
         </div>
     </div>
 {% endmacro %}
