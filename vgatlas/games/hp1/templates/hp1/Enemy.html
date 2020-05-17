@@ -69,7 +69,7 @@
             <div class="card">
                 <h5 class="card-header">Basic data and stats</h5>
                 <dl class="row card-body">
-                    {% macro row(attr, text, info=None, value=None, barvalue=None, max=None) %}
+                    {% macro row(attr, text, color=None, info=None, value=None, barvalue=None, max=None) %}
                         {% if value == None %} {% set value = enemy[attr] %} {% endif %}
                         {% if barvalue == None %} {% set barvalue = value %} {% endif %}
                         <dt class="col-4">
@@ -86,24 +86,30 @@
                                     <div class="col-4">{{ value }}</div>
                                     <div class="col-8">
                                         <div class="progress">
-                                            <div class="progress-bar" style="width: {{100*(barvalue/max)}}%"></div>
+                                            <div class="progress-bar progress-bar-{{attr}}"
+                                                style="
+                                                    width: {{100*(barvalue/max)}}%;
+                                                    {% if color %}
+                                                        background-color: {{color}};
+                                                    {% endif %}
+                                                "></div>
                                         </div>
                                     </div>
                                 </dd>
                             {% endif %}
                     {% endmacro %}
                     {{ row("num", "Battler ID") }}
-                    {{ row("hp", "HP", max=800) }}
+                    {{ row("hp", "HP", max=800, color="darkblue") }}
                     {{ row("mp", "MP", max=1) }}
-                    {{ row("pri", "Priority", max=255) }}
-                    {{ row("str", "Strength", max=255) }}
-                    {{ row("pri", "Agility", value=150-enemy.pri, barvalue=255-enemy.pri, max=255,
+                    {{ row("str", "Strength", max=255, color="red") }}
+                    {{ row("pri", "Priority", max=255, color="grey") }}
+                    {{ row("pri", "Agility", value=150-enemy.pri, barvalue=255-enemy.pri, max=255, color="#b4b44f",
                         info="Agility is calculated from Priority using the formula 150-priority.") }}
-                    {{ row("flip", "Physical defense", max=255,
+                    {{ row("flip", "Physical defense", max=255, color="#0063ff",
                         info="Physical defense is used against the Flipendo and Wingadium Leviosa spells.") }}
-                    {{ row("vermi", "Vermillious defense", max=255) }}
-                    {{ row("verdi", "Verdimillious defense", max=255) }}
-                    {{ row("ince", "Incendio defense", max=255) }}
+                    {{ row("vermi", "Vermillious defense", max=255, color="#ce0000") }}
+                    {{ row("verdi", "Verdimillious defense", max=255, color="#007300") }}
+                    {{ row("ince", "Incendio defense", max=255, color="#412356") }}
                     {{ row("psn1", "Poison value 1",
                         info="We don't know what these values mean exactly, but they seem to be only used by enemies which can poison you.") }}
                     {{ row("psn2", "Poison value 2") }}
