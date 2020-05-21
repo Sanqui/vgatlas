@@ -5,7 +5,11 @@
     {{ prevnext() }}
     <h2>
         {% if index %}#{{index}}{% endif %}
-        {{ object | inline }}
+        {% if isinstance(object, list) %}
+            {{ path[-1] }}
+        {% else %}
+            {{ object | inline }}
+        {% endif %}
         <small class="text-muted">&lt;{{ type(object).__name__ }}&gt;</small>
     </h2>
     
