@@ -6,6 +6,9 @@
 :NUM_MAPS 2214 - 2116
 :NUM_BOSSES 14
 :NUM_SPELLS 17
+:NUM_CARDS 1723 - 1621
+:NUM_DECKS 4
+
 :Enemy {
     num         U8
     hp          U16
@@ -24,9 +27,9 @@
     sickles     U16
     sickles_rnd U8
     item_drop   U8 match {
-        254     => :Drop254
-        253     => :Drop253
-        252     => :Drop252
+        254     => :CardSet2
+        253     => :CardSet1
+        252     => :CardSet0
         item_id => item_id -> items
     } 
 }
@@ -128,6 +131,32 @@ spells @sym.SpellDamageTable [NUM_SPELLS] {
     mp_cost         _spell_data.mp_costs[id]
     base_damage     U8
     aoe             _spell_data.aoe[id]
+}
+
+cards [NUM_CARDS] {
+    _id             I
+    name            (_id + 1621) -> text
+    description     (_id + 1725) -> text
+}
+
+// This can't be expressed nicely in Datamijn :(
+_card_sets @sym.RandomCardSets [3] @U16 {
+    count U8
+    indices [count]U8
+}
+_card_mappings @sym.RandomCardMappings [255][4] U8 -> cards
+
+decks [NUM_DECKS] {
+    _id             I
+    name            (_id + 2756) -> text
+    card_sets       [3] {
+        _set_i      I
+        cards       [_card_sets[_set_i].count]{
+            _i I
+            _indice _card_sets[_set_i].indices[_i]
+            = _card_mappings[_indice][_id]
+        }
+    }
 }
 
 rng_table @sym.RNGTable [256]U8
