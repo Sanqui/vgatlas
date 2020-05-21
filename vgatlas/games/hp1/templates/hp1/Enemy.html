@@ -47,7 +47,7 @@
 {% macro block(object, path) %}
     {% set enemy = object %}
     <div class="row mb-4">
-        <div class="col-2">
+        <div class="col-md-2">
             <div class="card">
                 <h5 class="card-header">Image</h5>
                 <div class="row card-body text-center">
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-10">
+        <div class="col-md-10">
             <div class="card">
                 <h5 class="card-header">Basic data and stats</h5>
                 <dl class="row card-body">
@@ -99,7 +99,7 @@
                             {% endif %}
                     {% endmacro %}
                     {{ row("num", "Battler ID") }}
-                    {{ row("hp", "HP", max=800, color="darkblue") }}
+                    {{ row("hp", "HP", max=600, color="darkblue") }}
                     {{ row("mp", "MP", max=1) }}
                     {{ row("str", "Strength", max=255, color="red") }}
                     {{ row("pri", "Priority", max=255, color="grey") }}
@@ -118,25 +118,25 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-6">
+        <div class="col-md-6">
             <div class="card">
                 <h5 class="card-header">Rewards</h5>
                 <dl class="row card-body">
                     {{ row("exp", "Experience points") }}
-                    {{ row("sickles", "Sickles") }}
+                    {% set sickles = "{} – {}".format(enemy.sickles, enemy.sickles+enemy.sickles_rnd) %}
+                    {{ row("sickles", "Sickles", value=sickles, info="This range is inclusive.") }}
                     {{ row("item_drop", "Item drop",
                         info="The chance for an item drop is 1/4 for each enemy.") }}
                 </dl>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-md-6">
             <div class="card">
                 <h5 class="card-header">Unknown values</h5>
                 <div class="card-body">
                     <dl class="row">
                         {{ row("unk1", "Unknown value 1") }}
                         {{ row("unk2", "Unknown value 2") }}
-                        {{ row("unk16", "Unknown value 16") }}
                     </dl>
                     <p class="text-muted">We don't know what these values are used for yet.  More research is needed!</p>
                 </div>
