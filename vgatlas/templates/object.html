@@ -9,7 +9,7 @@
         <small class="text-muted">&lt;{{ type(object).__name__ }}&gt;</small>
     </h2>
     
-    <ul class="nav nav-tabs justify-content-end">
+    <ul class="nav nav-tabs justify-content-end" style="margin-bottom: -1px;">
         {% for v in views %}
             <li class="nav-item">
                 <a class="nav-link {% if v == view %}active{% endif %}" href="?view={{v}}">

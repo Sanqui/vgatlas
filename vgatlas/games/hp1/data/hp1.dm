@@ -22,7 +22,7 @@
     psn2        U8
     exp         U16
     sickles     U16
-    unk16       U8
+    sickles_rnd U8
     item_drop   U8 match {
         254     => :Drop254
         253     => :Drop253
