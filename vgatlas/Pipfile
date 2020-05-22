@@ -7,6 +7,7 @@ name = "pypi"
 flask = "*"
 datamijn = {git = "/home/sanqui/romhacking/datamijn/datamijn",ref = "0.4.21"}
 watchdog = "*"
+requests = "*"
 
 [dev-packages]
 pylint = "*"

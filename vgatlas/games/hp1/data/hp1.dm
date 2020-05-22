@@ -8,6 +8,7 @@
 :NUM_SPELLS 17
 :NUM_CARDS 1723 - 1621
 :NUM_DECKS 4
+:NUM_CARD_COMBOS 2465 - 2415
 
 :Enemy {
     num         U8
@@ -133,7 +134,7 @@ spells @sym.SpellDamageTable [NUM_SPELLS] {
     aoe             _spell_data.aoe[id]
 }
 
-cards [NUM_CARDS] {
+cards [NUM_CARDS] :Card {
     _id             I
     name            (_id + 1621) -> text
     description     (_id + 1725) -> text
@@ -146,7 +147,7 @@ _card_sets @sym.RandomCardSets [3] @U16 {
 }
 _card_mappings @sym.RandomCardMappings [255][4] U8 -> cards
 
-decks [NUM_DECKS] {
+decks [NUM_DECKS] :Deck {
     _id             I
     name            (_id + 2756) -> text
     card_sets       [3] {
@@ -157,6 +158,13 @@ decks [NUM_DECKS] {
             = _card_mappings[_indice][_id]
         }
     }
+}
+
+card_combos @sym.CardComboCardTable [NUM_CARD_COMBOS] :CardCombo {
+    _id             I
+    name            (_id + 2415) -> text
+    cards           [3] U8 -> cards
+    effect_text     (_id + 2466) -> text
 }
 
 rng_table @sym.RNGTable [256]U8

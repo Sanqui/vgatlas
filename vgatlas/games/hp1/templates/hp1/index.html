@@ -6,17 +6,32 @@
 {% block content %}
     <h2>{{ g.gametitle }}</h2>
     Now introducing: <a href="/hp1/notes/">Notes</a>!
-    <h3>Game objects</h3>
-    <div class="list-group">
-        {{ item('Enemies') }}
-        {{ item('Enemy rosters') }}
-        {{ item('Boss rosters') }}
-        {{ item('Items') }}
-        {{ item('Cards') }}
-        {{ item('Decks') }}
-        {{ item('Maps') }}
-        {{ item('Harry stats') }}
-        {{ item('Spells') }}
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>Battle stuff</h3>
+            <div class="list-group">
+                {{ item('Enemies', examples=False,
+                    description='All the enemies you can encounter in the game.') }}
+                {{ item('Enemy rosters', examples=False,
+                    description="Which sets of enemies can be encountered on which maps.") }}
+                {{ item('Boss rosters', examples=False,
+                    description="The sets of enemies fought as bosses.") }}
+                {{ item('Spells',
+                    description="All the spells Harry can learn.") }}
+                {{ item('Harry stats', examples=False,
+                    description="Per-level fixed stats for Harry.") }}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <h3>Collectibles</h3>
+            <div class="list-group">
+                {{ item('Items') }}
+                {{ item('Cards') }}
+                {{ item('Decks') }}
+                {{ item('Card combos') }}
+                {{ item('Maps') }}
+            </div>
+        </div>
     </div>
 
     <details>

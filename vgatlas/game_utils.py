@@ -1,12 +1,19 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, g, abort
 import datamijn
+import requests
 
 from object_endpoint import object_endpoint
 
 ROOT = "pokered"
 
-def setup(name, rom_filename, title=None, post_setup=None):
+def setup(name, rom_filename, title=None, post_setup=None, symbols_url=None):
     print(f"Initializing {name}...")
+    if symbols_url:
+        # Fetch symbols.  XXX this should be pinned to a version at some point
+        symbols = requests.get("https://raw.githubusercontent.com/Sanqui/romhacking/master/hp/hp1.sym").text
+        symbols_filename = rom_filename.split('.')[0] + '.sym'
+        open(f"games/{name}/data/{symbols_filename}", "w").write(symbols)
+
     dm = open(f"games/{name}/data/{name}.dm")
     rom = open(f"games/{name}/data/{rom_filename}", "rb")
     data = datamijn.parse(dm, rom, f"games/{name}/static/")

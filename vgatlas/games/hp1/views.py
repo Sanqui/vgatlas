@@ -3,7 +3,9 @@ import datamijn
 
 from game_utils import setup
 
-blueprint, hp1 = setup("hp1", "hp1.gbc", title="Harry Potter and the Philosopher's Stone (GBC)")
+blueprint, hp1 = setup("hp1", "hp1.gbc",
+    title="Harry Potter and the Philosopher's Stone (GBC)",
+    symbols_url="https://raw.githubusercontent.com/Sanqui/romhacking/master/hp/hp1.sym")
 
 table_formats = {
 }

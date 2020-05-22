@@ -238,7 +238,7 @@
         </nav>
     {% endif %}
 {% endmacro %}
-{% macro item(title, name=None, description=None) %}
+{% macro item(title, name=None, description=None, examples=True) %}
     {% set name = name or title.lower().replace(' ', '_') %}
     {% set obj_url = url_for(root+'.object', path=name)  %}
     {% set obj = g[root][name] %}
@@ -248,10 +248,16 @@
             {{ description }}
         {% endif %}
         {% if isinstance(obj, list) %}
-            {% for item in obj[0:3] %}
-                {{ item | inline | striptags }}{% if not loop.last %},{% endif %}
-            {% endfor -%}
-            ... <strong>{{ obj | count }}</strong> total
+            {% if examples %}
+                {% if description %}
+                    <br>
+                {% endif %}
+                {% for item in obj[0:3] %}
+                    {{ item | inline | striptags }}{% if not loop.last %},{% endif %}
+                {% endfor -%}
+                ... 
+            {% endif %}
+            <strong>{{ obj | count }}</strong> total
         {% endif %}
     </a>
 {% endmacro %}
