@@ -8,7 +8,7 @@
 :NUM_SPELLS 17
 :NUM_CARDS 1723 - 1621
 :NUM_DECKS 4
-:NUM_CARD_COMBOS 2465 - 2415
+:NUM_CARD_COMBOS 50
 
 :Enemy {
     num         U8
@@ -84,6 +84,13 @@ maps    [NUM_MAPS] :Map {
     id          I
     name        (2116 + id) -> text
     message     (2215 + id) -> text
+}
+
+map_data_id_and_vram_target_pointers @sym.MapDataIdAndVramTargetPointers [NUM_MAPS]  :MapDataIdAndVRAMTargetPointer {
+    id          I
+    map         id -> maps
+    map_id      U8
+    vram_target_pointer U16
 }
 
 :EnemyRoster [3] U8 match {

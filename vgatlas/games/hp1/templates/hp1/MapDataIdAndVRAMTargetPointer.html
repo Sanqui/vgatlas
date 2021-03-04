@@ -1,0 +1,15 @@
+{% macro thead(object, path, root) %}
+    <th>#</th>
+    <th>id</th>
+    <th>map</th>
+    <th>map_id</th>
+    <th>vram_target_pointer</th>
+{% endmacro %}
+
+{% macro trow(i, object, url, path, root) %}
+    <td><a href="{{url}}">#{{i}}</a></td>
+    <td>{{object.id}}</td>
+    <td>{{object.map | inline}}</td>
+    <td>{{object.map_id}}</td>
+    <td><tt>{{ "{:04x}".format(object.vram_target_pointer) }}</tt></td>
+{% endmacro %}
